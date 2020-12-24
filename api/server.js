@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const path = require("path");
+const connectionOnDB = require("./connectionOnDB");
 
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
@@ -38,7 +39,7 @@ module.exports = class SlimMomServer {
 
   initDB() {
     try {
-      // TODO: fn connect data base
+      connectionOnDB();
     } catch (error) {
       process.exit(1);
     }
