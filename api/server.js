@@ -4,6 +4,8 @@ const morgan = require("morgan");
 const path = require("path");
 const connectionOnDB = require("./connectionOnDB");
 
+const dailyRateRouters = require("./dailyRate/dailyRate.routers");
+
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const { PORT } = process.env;
@@ -35,7 +37,9 @@ module.exports = class SlimMomServer {
     this.server.use(cors({ origin: `http://localhost:${PORT}` }));
   }
 
-  initRoutes() {}
+  initRoutes() {
+    this.server.use("/daily-rate", dailyRateRouters);
+  }
 
   initDB() {
     try {
