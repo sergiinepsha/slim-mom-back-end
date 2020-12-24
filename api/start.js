@@ -1,3 +1,3 @@
-const SlimMomServer = require("./server");
+const SlimMomServer = require('./server');
 
 new SlimMomServer().start();
