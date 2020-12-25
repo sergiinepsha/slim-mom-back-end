@@ -47,9 +47,9 @@ class AuthController {
    async _logout(req, res, next) {
       try {
          const user = req.user;
-         console.dir(user);
-         await updateUserToken(user._id, null);
-         return await res.status(204);
+         console.dir(user.sid);
+         await updateUserToken(user.sid, null);
+         return res.status(204).send();
       } catch (error) {
          next(error);
       }

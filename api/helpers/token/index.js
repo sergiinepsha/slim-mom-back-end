@@ -14,7 +14,7 @@ async function updateUserToken(userID, value) {
       }
       const accessToken = { expiresIn: 30 * 60 };
       const token = await jwt.sign({ id: userID }, JWT_SECRET, accessToken);
-      const newToken = await userModule.updateToken(userID, token);
+      const newToken = await userModule.updateAccessToken(userID, token);
       return newToken.accessToken;
    } catch (error) {
       throw error;

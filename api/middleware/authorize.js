@@ -3,35 +3,40 @@ require('dotenv').config();
 const { JWT_SECRET } = process.env;
 
 const userModule = require('../users/user.model');
-const { RequestError } = require('../helpers');
+const { token, RequestError } = require('../helpers');
+
+const { updateUserToken } = token;
 
 async function authorize(req, res, next) {
    try {
       const authorizationHeader = req.get('Authorization' || '');
       const token = authorizationHeader.replace('Bearer ', '');
-      console.dir(req);
 
-      let userId;
-      try {
-         userId = await jwt.verify(token, JWT_SECRET).id;
-      } catch (err) {
-         next(new RequestError('User not authorized', 401));
-         // throw new RequestError('User not authorized', 401);
-      }
-
+      const userId = await validationsToken(token);
       const user = await userModule.findById(userId);
 
       if (!user || user.accessToken !== token) {
          throw new RequestError('User not authorized', 401);
       }
 
-      req.user = user;
-      req.accessToken = token;
-      req.refreshToken = user.refreshToken;
-      req.sid = user.sid;
+      const validationsRefreshToken = await validationsToken(user.refreshToken);
+      const updateToken = await updateUserToken(validationsRefreshToken);
+      const user1 = await userModule.findById(userId);
+
+      req.user = user1;
+      req.accessToken = updateToken;
       next();
    } catch (err) {
       next(err);
+   }
+}
+
+async function validationsToken(token) {
+   try {
+      const userId = await jwt.verify(token, JWT_SECRET).id;
+      return userId;
+   } catch (err) {
+      throw new RequestError('User not authorized', 401);
    }
 }
 
