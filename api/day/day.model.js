@@ -1,10 +1,15 @@
+const { string } = require('joi');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const {
+   Types: { ObjectId },
+} = require('mongoose');
 
 const daySchema = new Schema({
-   date: { type: Date, required: true },
-   daySummary: { type: ObjectId, required: true },
-   eatenProducts: [{ type: ObjectId, required: true }],
+   eatenProduct: { type: ObjectId, required: true },
+   day: { type: Object, required: true },
+   daySummary: { type: Object, required: true },
+   // eatenProducts: [{ type: ObjectId, required: true }],
 });
 
 // MongoDB collection >>> products
