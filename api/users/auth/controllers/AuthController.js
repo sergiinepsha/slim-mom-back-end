@@ -1,8 +1,7 @@
 const { getEmail, validPassword, createNewUser } = require('../models/index');
-const {
-   token: { updateUserToken },
-} = require('../../../helpers');
+const { token } = require('../../../helpers');
 
+const { updateUserToken, addForUserTokens } = token;
 class AuthController {
    get createUser() {
       return this._createUser.bind(this);
@@ -17,7 +16,7 @@ class AuthController {
       return this._getRefreshUser.bind(this);
    }
 
-   //POST /auth/contacts
+   //POST /auth/register
    async _createUser(req, res, next) {
       try {
          const newUser = await createNewUser(req.body);
@@ -27,7 +26,7 @@ class AuthController {
       }
    }
 
-   //PUT /auth/sign-in
+   //PUT /auth/login
    async _login(req, res, next) {
       try {
          const { email, password } = req.body;
@@ -36,9 +35,9 @@ class AuthController {
 
          await validPassword(password, userFromDb);
 
-         const token = await updateUserToken(userFromDb._id);
+         const { accessToken, refreshToken, sid } = await addForUserTokens(userFromDb._id);
 
-         return res.status(201).json({ token });
+         return res.status(201).json({ accessToken, refreshToken, sid });
       } catch (error) {
          next(error);
       }
@@ -55,7 +54,7 @@ class AuthController {
       }
    }
 
-   //GET /auth/current
+   //GET /auth/refresh
    async _getRefreshUser(req, res, next) {
       try {
          const userForResponse = this.prepareUserResponse(req.user);

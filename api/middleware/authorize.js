@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { JWT_SECRET } = process.env;
 
-const { userModule } = require('../users/auth/data/userSchema');
+const userModule = require('../users/userSchema');
 const { RequestError } = require('../helpers');
 
 async function authorize(req, res, next) {
@@ -25,15 +25,15 @@ async function authorize(req, res, next) {
       // userModel - модель пользователя в нашей системе
       const user = await userModule.findById(userId);
 
-      if (!user || user.token !== token) {
+      if (!user || user.accessToken !== token) {
          throw new RequestError('User not authorized', 401);
       }
 
       // 4. Если все прошло успешно - передать запись пользователя и токен в req
       // и передать обработку запроса на следующий middleware
       req.user = user;
-      req.token = token;
-
+      req.accessToken = token;
+      req.refreshToken = token;
       next();
    } catch (err) {
       next(err);

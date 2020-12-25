@@ -3,38 +3,38 @@ require('dotenv').config();
 
 const { RequestError } = require('./index');
 // const { contactModule } = require('@data');
-const { userModule } = require('../../users/auth/data/userSchema');
+const userModule = require('../../users/userSchema');
 
 const { JWT_SECRET } = process.env;
 
-async function updateContactToken(userID, value) {
+async function updateUserToken(userID, value) {
    try {
-      // if (value === null) {
-      //    return await contactModule.updateToken(userID, null);
-      // }
-      // const options = {
-      //    expiresIn: 2 * 24 * 60 * 60, //two days
-      // };
-      // const token = await jwt.sign({ id: userID }, JWT_SECRET, options);
-      // const newToken = await contactModule.updateToken(userID, token);
-      // return newToken.token;
+      if (value === null) {
+         return await userModule.updateAccessToken(userID, null);
+      }
+      const accessToken = { expiresIn: 30 * 60 };
+      const token = await jwt.sign({ id: userID }, JWT_SECRET, accessToken);
+      const newToken = await userModule.updateToken(userID, token);
+      return newToken.accessToken;
    } catch (error) {
       throw error;
    }
 }
 
-async function updateUserToken(userID, value) {
+async function addForUserTokens(userID, value) {
    try {
       if (value === null) {
-         return await userModule.updateToken(userID, null);
+         return await userModule.addTokensForUser(userID, null);
       }
-      const options = {
-         expiresIn: 2 * 24 * 60 * 60, //two days
-      };
-      const token = await jwt.sign({ id: userID }, JWT_SECRET, options);
-      const newToken = await userModule.updateToken(userID, token);
+      const refreshTokenOptions = { expiresIn: 2 * 24 * 60 * 60 };
+      const accessTokenOptions = { expiresIn: 30 * 60 };
 
-      return newToken.token;
+      const accessToken = await jwt.sign({ id: userID }, JWT_SECRET, accessTokenOptions);
+      const refreshToken = await jwt.sign({ id: userID }, JWT_SECRET, refreshTokenOptions);
+
+      const newToken = await userModule.addTokensForUser(userID, accessToken, refreshToken);
+
+      return newToken;
    } catch (error) {
       throw error;
    }
@@ -54,6 +54,6 @@ async function validToken(token) {
 
 module.exports = {
    updateUserToken,
-   updateContactToken,
+   addForUserTokens,
    validToken,
 };

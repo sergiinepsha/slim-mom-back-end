@@ -1,6 +1,8 @@
 const { authorize, validateIdQuery } = require('../../../middleware');
 
 const AuthController = require('../controllers/AuthController');
+// const EmailController = require('../controllers/EmailController');
+
 const validateSingIn = require('../middleware/validateSingIn');
 const validateCreateUser = require('../middleware/validateCreateUser');
 
@@ -32,6 +34,11 @@ const authList = [
       urn: '/refresh',
       middleware: [authorize, AuthController.getRefreshUser],
    },
+   // {
+   //    app: 'get',
+   //    urn: 'verify/:verificationToken',
+   //    middleware: [EmailController.verifyUser],
+   // },
 ];
 
 module.exports = authList;
