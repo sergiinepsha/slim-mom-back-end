@@ -4,6 +4,9 @@ const {
    Types: { ObjectId },
 } = require('mongoose');
 
+const productModel = require('../products/product.model');
+const { indexOf } = require('../users/auth/routes/authListURN');
+
 async function dailyRate(req, res, next) {
    try {
       const userId = req.params.userId;
@@ -11,38 +14,33 @@ async function dailyRate(req, res, next) {
       const dailyRate =
          10 * weight + 6.25 * height - 5 * age - 161 - 10 * (weight - desiredWeight) + bloodType;
 
+      const listProducts = await productModel.find();
+      const random = Math.floor(Math.random() * 2648);
+      const randomProduct = listProducts[random].title.ru;
+
       if (!userId) {
-         const dailyRateData = { dailyRate, notAllowedProducts: [] };
+         const dailyRateData = { dailyRate, notAllowedProducts: [randomProduct] };
          return res.status(200).send(dailyRateData);
       }
 
+      const date = new Date().toLocaleDateString('fr-ca');
+
       const dailyRateData_withID = {
-         id: '12',
          dailyRate,
          summaries: [
             {
-               //    _id: '12',
-               date: '12',
+               date,
                kcalLeft: 1,
                kcalConsumed: 12,
                dailyRate: 12,
                percentsOfDailyRate: 2,
                userId: userId,
-               //    __v: 0,
             },
          ],
-         notAllowedProducts: [['Яйцо куриное (желток сухой)']],
+         notAllowedProducts: [[randomProduct]],
       };
-      console.log(dailyRateData_withID);
 
       const fromDataBase = await dailyRateModel.create(dailyRateData_withID);
-      //   const { _id, __v } = fromDataBase;
-      console.log(fromDataBase);
-
-      //   dailyRateData_withID.summaries;
-
-      //   const listProducts = await dailyRateModel.find();
-      //   console.log(listProducts);
 
       return res.status(200).send(fromDataBase);
    } catch (error) {
@@ -66,7 +64,6 @@ function validateDailyRate(req, res, next) {
 }
 function validateId(req, res, next) {
    const { userId } = req.params;
-
    if (!ObjectId.isValid(userId)) {
       return res.status(400).send();
    }

@@ -6,6 +6,7 @@ dailyRateRouters.post('/', dailyRateControllers.validateDailyRate, dailyRateCont
 
 dailyRateRouters.post(
    '/:userId',
+   //    dailyRateControllers.validateId,
    dailyRateControllers.validateDailyRate,
    dailyRateControllers.dailyRate,
 );
