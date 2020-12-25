@@ -27,7 +27,9 @@ const userSchema = new Schema({
    verificationToken: { ...authConfig },
 
    // todaySummary: [{ type: ObjectId, ref: 'todaySummary' }], // чтобы можно привязывать id к  данной строке надо использовать  ObjectId
+   // user: [{ type: ObjectId, ref: 'user' }],
 });
+
 //auth
 userSchema.statics.findUserByIdAndUpdate = authSchema.findUserByIdAndUpdate;
 userSchema.statics.findUserByEmail = authSchema.findUserByEmail;

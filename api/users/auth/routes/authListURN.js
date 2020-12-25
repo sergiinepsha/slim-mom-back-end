@@ -13,21 +13,16 @@ const authList = [
       urn: '/register',
       middleware: [validateCreateUser, AuthController.createUser],
    },
-   {
-      app: 'get',
-      urn: '/register',
-      middleware: [AuthController.createUser],
-   },
 
    {
-      app: 'put',
+      app: 'post',
       urn: '/login',
       middleware: [validateSingIn, AuthController.login],
    },
    {
       app: 'patch',
-      urn: '/:id/logout',
-      middleware: [validateIdQuery, authorize, AuthController.logout],
+      urn: '/logout',
+      middleware: [authorize, AuthController.logout],
    },
    {
       app: 'get',
