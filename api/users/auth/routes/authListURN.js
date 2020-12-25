@@ -31,8 +31,8 @@ const authList = [
    },
    {
       app: 'get',
-      urn: '/refresh',
-      middleware: [authorize, AuthController.getRefreshUser],
+      urn: '/current',
+      middleware: [authorize, AuthController.getCurrentUser],
    },
    // {
    //    app: 'get',

@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const { RequestError } = require('./index');
 // const { contactModule } = require('@data');
-const userModule = require('../../users/userSchema');
+const userModule = require('../../users/user.model');
 
 const { JWT_SECRET } = process.env;
 
@@ -27,7 +27,7 @@ async function addForUserTokens(userID, value) {
          return await userModule.addTokensForUser(userID, null);
       }
       const refreshTokenOptions = { expiresIn: 2 * 24 * 60 * 60 };
-      const accessTokenOptions = { expiresIn: 30 * 60 };
+      const accessTokenOptions = { expiresIn: 120 * 60 };
 
       const accessToken = await jwt.sign({ id: userID }, JWT_SECRET, accessTokenOptions);
       const refreshToken = await jwt.sign({ id: userID }, JWT_SECRET, refreshTokenOptions);

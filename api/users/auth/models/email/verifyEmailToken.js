@@ -1,4 +1,4 @@
-const userModule = require('../../../userSchema');
+const userModule = require('../../../user.model');
 const { RequestError } = require('../../../../helpers');
 
 async function verifyEmailToken(token) {

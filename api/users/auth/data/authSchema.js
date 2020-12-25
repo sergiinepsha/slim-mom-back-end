@@ -19,7 +19,6 @@ async function findUserByEmail(email) {
 }
 
 //verification
-
 async function createVerificationToken(id, newToken) {
    return await this.findByIdAndUpdate(id, { verificationToken: newToken }, { new: true });
 }
