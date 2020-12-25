@@ -1,8 +1,7 @@
 const { getEmail, validPassword, createNewUser } = require('../models/index');
-const {
-   token: { updateUserToken },
-} = require('../../../helpers');
+const { token } = require('../../../helpers');
 
+const { updateUserToken, addForUserTokens } = token;
 class AuthController {
    get createUser() {
       return this._createUser.bind(this);
@@ -13,11 +12,11 @@ class AuthController {
    get logout() {
       return this._logout.bind(this);
    }
-   get getRefreshUser() {
-      return this._getRefreshUser.bind(this);
+   get getCurrentUser() {
+      return this._getCurrentUser.bind(this);
    }
 
-   //POST /auth/contacts
+   //POST /auth/register
    async _createUser(req, res, next) {
       try {
          const newUser = await createNewUser(req.body);
@@ -27,7 +26,7 @@ class AuthController {
       }
    }
 
-   //PUT /auth/sign-in
+   //PUT /auth/login
    async _login(req, res, next) {
       try {
          const { email, password } = req.body;
@@ -36,9 +35,9 @@ class AuthController {
 
          await validPassword(password, userFromDb);
 
-         const token = await updateUserToken(userFromDb._id);
+         const { accessToken, refreshToken, sid } = await addForUserTokens(userFromDb._id);
 
-         return res.status(201).json({ token });
+         return res.status(201).json({ accessToken, refreshToken, sid });
       } catch (error) {
          next(error);
       }
@@ -48,6 +47,7 @@ class AuthController {
    async _logout(req, res, next) {
       try {
          const user = req.user;
+         console.dir(user);
          await updateUserToken(user._id, null);
          return await res.status(204);
       } catch (error) {
@@ -56,7 +56,7 @@ class AuthController {
    }
 
    //GET /auth/current
-   async _getRefreshUser(req, res, next) {
+   async _getCurrentUser(req, res, next) {
       try {
          const userForResponse = this.prepareUserResponse(req.user);
          return res.status(200).json(userForResponse);
@@ -66,8 +66,8 @@ class AuthController {
    }
 
    prepareUserResponse(user) {
-      const { email, subscription } = user;
-      return { email, subscription };
+      const { email, name, accessToken, refreshToken, sid } = user;
+      return { email, name, accessToken, refreshToken, sid };
    }
 }
 
