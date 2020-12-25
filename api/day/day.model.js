@@ -1,4 +1,3 @@
-const { string } = require('joi');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const {
@@ -6,10 +5,9 @@ const {
 } = require('mongoose');
 
 const daySchema = new Schema({
-   eatenProduct: { type: ObjectId, required: true },
+   eatenProduct: { type: Object, required: true },
    day: { type: Object, required: true },
    daySummary: { type: Object, required: true },
-   // eatenProducts: [{ type: ObjectId, required: true }],
 });
 
 // MongoDB collection >>> products

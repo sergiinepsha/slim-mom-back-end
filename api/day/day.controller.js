@@ -1,40 +1,66 @@
 const dayModel = require('./day.model');
 const Joi = require('joi');
+const jwt = require('jsonwebtoken');
 const {
    Types: { ObjectId },
 } = require('mongoose');
 
 const productModel = require('../products/product.model');
+const dailyRateModel = require('../dailyRate/dailyRate.model');
+const userModel = require('../users/user.model');
 
 async function addProductPerDay(req, res, next) {
    try {
       const { date, productId, weight } = req.body;
 
-      if (date) {
-      }
+      //   const authToken = req.get('Authorization');
+      //   const token = authToken.replace('Bearer ', '');
+      //   const userId = await jwt.verify(token, process.env.JWT_SECRET).id;
+      //   console.log(userId);
+
+      //   const userFromDB = await userModel.findOne(token);
+      //   const dailyRate_UserId = await dailyRateModel.findById(userId);
 
       const eatenProduct = await productModel.findById(productId);
-      console.log(eatenProduct);
       if (!eatenProduct) {
          return res.status(404).send('Product not found');
       }
 
-      const eatenProducts = [eatenProduct];
+      const dayDB = await dayModel.find();
+      const dayData = dayDB.find(day => day.day.date === date);
 
-      const kcalConsumed = eatenProducts.reduce(
-         (acc, { calories }) => acc + (calories * weight) / 100,
-         0,
-      );
-      const dailyRate = '';
+      if (dayData) {
+         const updDayData = dayData;
+
+         updDayData.eatenProduct = eatenProduct;
+         updDayData.day.eatenProducts.push(eatenProduct);
+         updDayData.daySummary.kcalConsumed = updDayData.day.eatenProducts.reduce(
+            (acc, { calories }) => acc + (calories * weight) / 100,
+            0,
+         );
+         updDayData.daySummary.dailyRate = 2500;
+         updDayData.daySummary.kcalLeft =
+            updDayData.daySummary.dailyRate - updDayData.daySummary.kcalConsumed;
+         updDayData.daySummary.percentsOfDailyRate =
+            (updDayData.daySummary.kcalConsumed / updDayData.daySummary.dailyRate) * 100;
+
+         const upData = await dayModel.findOneAndUpdate(date, updDayData);
+         return res.status(201).send(upData);
+      }
+
+      const eatenProducts = [eatenProduct];
+      const dailyRate = 2500;
+      const daySummary = '';
+      const kcalConsumed = (eatenProduct.calories * weight) / 100;
       const kcalLeft = dailyRate - kcalConsumed;
       const percentsOfDailyRate = (kcalConsumed / dailyRate) * 100;
 
       const eatenProductPerDay = {
-         eatenProduct: { ...eatenProduct },
+         eatenProduct,
          day: {
             eatenProducts,
             date,
-            daySummary: '',
+            daySummary,
          },
          daySummary: {
             date,
