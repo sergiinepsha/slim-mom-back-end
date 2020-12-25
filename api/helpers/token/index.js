@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const { RequestError } = require('./index');
-// const { contactModule } = require('@data');
 const userModule = require('../../users/user.model');
 
 const { JWT_SECRET } = process.env;
@@ -29,12 +28,20 @@ async function addForUserTokens(userID, value) {
       const refreshTokenOptions = { expiresIn: 2 * 24 * 60 * 60 };
       const accessTokenOptions = { expiresIn: 120 * 60 };
 
-      const accessToken = await jwt.sign({ id: userID }, JWT_SECRET, accessTokenOptions);
-      const refreshToken = await jwt.sign({ id: userID }, JWT_SECRET, refreshTokenOptions);
+      const accessToken = await createToken(userID, accessTokenOptions);
+      const refreshToken = await createToken(userID, refreshTokenOptions);
 
       const newToken = await userModule.addTokensForUser(userID, accessToken, refreshToken);
 
       return newToken;
+   } catch (error) {
+      throw error;
+   }
+}
+
+async function createToken(id, options) {
+   try {
+      return jwt.sign({ id }, JWT_SECRET, options);
    } catch (error) {
       throw error;
    }
