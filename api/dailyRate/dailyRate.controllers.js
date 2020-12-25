@@ -5,7 +5,6 @@ const {
 } = require('mongoose');
 
 const productModel = require('../products/product.model');
-const { indexOf } = require('../users/auth/routes/authListURN');
 
 async function dailyRate(req, res, next) {
    try {
