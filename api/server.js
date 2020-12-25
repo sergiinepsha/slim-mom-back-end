@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const path = require('path');
 const connectionOnDB = require('./connectionOnDB');
 
+const dailyRateRouters = require('./dailyRate/dailyRate.routers');
+
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const authRouter = require('./users/auth/routes/auth.router');
@@ -37,7 +39,8 @@ module.exports = class SlimMomServer {
    }
 
    initRoutes() {
-      // this.server.use('/auth', authRouter);
+      this.server.use('/auth', authRouter);
+      this.server.use('/daily-rate', dailyRateRouters);
    }
 
    initDB() {
