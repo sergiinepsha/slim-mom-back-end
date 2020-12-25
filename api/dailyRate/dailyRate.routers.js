@@ -1,17 +1,13 @@
-const { Router } = require("express");
-const dailyRateControllers = require("./dailyRate.controllers");
+const { Router } = require('express');
+const dailyRateControllers = require('./dailyRate.controllers');
 const dailyRateRouters = Router();
 
-dailyRateRouters.post(
-  "/",
-  //   dailyRateControllers.validateContact,
-  dailyRateControllers.dailyRate
-);
+dailyRateRouters.post('/', dailyRateControllers.validateDailyRate, dailyRateControllers.dailyRate);
 
 dailyRateRouters.post(
-  "/:userId",
-  //   dailyRateControllers.validateId,
-  dailyRateControllers.dailyRate
+   '/:userId',
+   dailyRateControllers.validateDailyRate,
+   dailyRateControllers.dailyRate,
 );
 
 module.exports = dailyRateRouters;
