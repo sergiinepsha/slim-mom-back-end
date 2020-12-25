@@ -40,7 +40,7 @@ module.exports = class SlimMomServer {
    }
 
    initRoutes() {
-      // this.server.use('/auth', authRouter);
+      this.server.use('/auth', authRouter);
       this.server.use('/product', productRouter);
       this.server.use('/daily-rate', dailyRateRouters);
    }
