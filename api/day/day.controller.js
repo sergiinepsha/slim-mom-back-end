@@ -18,23 +18,40 @@ async function addProductPerDay(req, res, next) {
       //   const userId = await jwt.verify(token, process.env.JWT_SECRET).id;
       //   console.log(userId);
 
-      const userFromDB = await userModel.findOne(token);
-      const dailyRate_UserId = await dailyRateModel.findById(userId);
-      const eatenProduct = await productModel.findById(productId);
+      //   const userFromDB = await userModel.findOne(token);
+      //   const dailyRate_UserId = await dailyRateModel.findById(userId);
 
+      const eatenProduct = await productModel.findById(productId);
       if (!eatenProduct) {
          return res.status(404).send('Product not found');
       }
 
-      const eatenProducts = [];
-      const dailyRate = dailyRate_UserId.dailyRate;
-      const daySummary = dailyRate_UserId._id;
+      const dayDB = await dayModel.find();
+      const dayData = dayDB.find(day => day.day.date === date);
 
-      const kcalConsumed = eatenProducts.reduce(
-         (acc, { calories }) => acc + (calories * weight) / 100,
-         0,
-      );
+      if (dayData) {
+         const updDayData = dayData;
 
+         updDayData.eatenProduct = eatenProduct;
+         updDayData.day.eatenProducts.push(eatenProduct);
+         updDayData.daySummary.kcalConsumed = updDayData.day.eatenProducts.reduce(
+            (acc, { calories }) => acc + (calories * weight) / 100,
+            0,
+         );
+         updDayData.daySummary.dailyRate = 2500;
+         updDayData.daySummary.kcalLeft =
+            updDayData.daySummary.dailyRate - updDayData.daySummary.kcalConsumed;
+         updDayData.daySummary.percentsOfDailyRate =
+            (updDayData.daySummary.kcalConsumed / updDayData.daySummary.dailyRate) * 100;
+
+         const upData = await dayModel.findOneAndUpdate(date, updDayData);
+         return res.status(201).send(upData);
+      }
+
+      const eatenProducts = [eatenProduct];
+      const dailyRate = 2500;
+      const daySummary = '';
+      const kcalConsumed = (eatenProduct.calories * weight) / 100;
       const kcalLeft = dailyRate - kcalConsumed;
       const percentsOfDailyRate = (kcalConsumed / dailyRate) * 100;
 
