@@ -1,3 +1,4 @@
+const { ObjectID } = require('mongodb');
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
@@ -11,7 +12,7 @@ const dailyRateSchema = new Schema({
          kcalConsumed: { type: Number, required: true },
          dailyRate: { type: Number, required: true },
          percentsOfDailyRate: { type: Number, required: true },
-         userId: { type: String, required: true },
+         userId: { type: ObjectID, required: true },
       },
    ],
    notAllowedProducts: [[{ type: String, required: true }]],
