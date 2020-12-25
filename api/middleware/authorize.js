@@ -21,10 +21,9 @@ async function authorize(req, res, next) {
 
       const validationsRefreshToken = await validationsToken(user.refreshToken);
       const updateToken = await updateUserToken(validationsRefreshToken);
-      const user1 = await userModule.findById(userId);
 
-      req.user = user1;
-      req.accessToken = updateToken;
+      req.user = user;
+      req.user.accessToken = updateToken;
       next();
    } catch (err) {
       next(err);
