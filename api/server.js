@@ -6,6 +6,7 @@ const connectionOnDB = require('./connectionOnDB');
 
 const authRouter = require('./users/auth/routes/auth.router');
 const productRouter = require('./products/product.router');
+const dailyRateRouters = require('./dailyRate/dailyRate.routers');
 
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
@@ -41,6 +42,7 @@ module.exports = class SlimMomServer {
    initRoutes() {
       // this.server.use('/auth', authRouter);
       this.server.use('/product', productRouter);
+      this.server.use('/daily-rate', dailyRateRouters);
    }
 
    initDB() {

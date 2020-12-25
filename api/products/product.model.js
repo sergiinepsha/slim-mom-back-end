@@ -17,7 +17,7 @@ const productSchema = new Schema({
    },
 });
 
-// MongoDB collection >>> contacts
+// MongoDB collection >>> products
 const productModel = mongoose.model('Product', productSchema);
 
 module.exports = productModel;
