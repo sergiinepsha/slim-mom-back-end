@@ -10,11 +10,10 @@ async function dailyRate(req, res, next) {
    try {
       const userId = req.params.userId;
       const { weight, height, age, desiredWeight, bloodType } = req.body;
-      const dailyRate =
-         10 * weight + 6.25 * height - 5 * age - 161 - 10 * (weight - desiredWeight) + bloodType;
+      const dailyRate = 10 * weight + 6.25 * height - 5 * age - 161 - 10 * (weight - desiredWeight);
 
       const listProducts = await productModel.find();
-      const random = Math.floor(Math.random() * 2648);
+      const random = Math.floor(Math.random() * listProducts.length);
       const randomProduct = listProducts[random].title.ru;
 
       if (!userId) {
