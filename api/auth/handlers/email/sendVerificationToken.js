@@ -1,9 +1,10 @@
 const uuid = require('uuid');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
+
 const { MY_PASS_MAIL, MY_MAIL, PORT, _PORT } = process.env;
 
-const userModule = require('../../../user.model');
+const userModule = require('../../../users/user.model');
 
 const transport = nodemailer.createTransport({
    service: 'gmail',

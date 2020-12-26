@@ -1,7 +1,8 @@
-const { getEmail, validPassword, createNewUser } = require('../models/index');
-const { token } = require('../../../helpers');
+const { getEmail, validPassword, createNewUser } = require('./handlers');
+const { token } = require('./helpers');
 
 const { updateUserToken, addForUserTokens } = token;
+
 class AuthController {
    get createUser() {
       return this._createUser.bind(this);
@@ -14,6 +15,22 @@ class AuthController {
    }
    get getCurrentUser() {
       return this._getCurrentUser.bind(this);
+   }
+   get verifyUserByEmail() {
+      return this._verifyUserByEmail.bind(this);
+   }
+
+   //GET /auth/verify/:verification
+   async _verifyUserByEmail(req, res, next) {
+      try {
+         const { verificationToken } = req.params;
+
+         await verifyEmailToken(verificationToken);
+
+         return res.status(200).json();
+      } catch (error) {
+         next(error);
+      }
    }
 
    //POST /auth/register
@@ -47,7 +64,6 @@ class AuthController {
    async _logout(req, res, next) {
       try {
          const user = req.user;
-         console.dir(user.sid);
          await updateUserToken(user.sid, null);
          return res.status(204).send();
       } catch (error) {

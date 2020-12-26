@@ -5,7 +5,7 @@ const path = require('path');
 const connectionOnDB = require('./connectionOnDB');
 
 const userRouter = require('./users/user.router');
-const authRouter = require('./users/auth/routes/auth.router');
+const authRouter = require('./auth/auth.router');
 const productRouter = require('./products/product.router');
 const dailyRateRouters = require('./dailyRate/dailyRate.routers');
 const dayRouter = require('./day/day.router');
