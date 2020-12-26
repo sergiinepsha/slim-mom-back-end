@@ -5,16 +5,18 @@ const {
 } = require('mongoose');
 
 const productModel = require('../products/product.model');
+const userModel = require('../users/user.model');
+const dayModel = require('../day/day.model');
 
 async function dailyRate(req, res, next) {
    try {
       const userId = req.params.userId;
+      const user = req.user._doc;
       const { weight, height, age, desiredWeight, bloodType } = req.body;
-      const dailyRate =
-         10 * weight + 6.25 * height - 5 * age - 161 - 10 * (weight - desiredWeight) + bloodType;
+      const dailyRate = 10 * weight + 6.25 * height - 5 * age - 161 - 10 * (weight - desiredWeight);
 
       const listProducts = await productModel.find();
-      const random = Math.floor(Math.random() * 2648);
+      const random = Math.floor(Math.random() * listProducts.length);
       const randomProduct = listProducts[random].title.ru;
 
       if (!userId) {
@@ -33,13 +35,23 @@ async function dailyRate(req, res, next) {
                kcalConsumed: 12,
                dailyRate: 12,
                percentsOfDailyRate: 2,
-               userId: userId,
+               userId,
             },
          ],
          notAllowedProducts: [[randomProduct]],
       };
 
+      const objToUser = {
+         ...user,
+         userData: {
+            ...req.body,
+            dailyRate,
+         },
+      };
+      //   console.log('objToUser', objToUser);
+
       const fromDataBase = await dailyRateModel.create(dailyRateData_withID);
+      await userModel.findByIdAndUpdate(userId, objToUser);
 
       return res.status(200).send(fromDataBase);
    } catch (error) {
