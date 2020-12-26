@@ -1,5 +1,6 @@
 const Joi = require('joi');
-const { RequestError } = require('../../../helpers');
+
+const { RequestError } = require('../../helpers');
 
 async function validateSingIn(req, res, next) {
    try {

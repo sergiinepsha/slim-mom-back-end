@@ -1,5 +1,5 @@
-const userModule = require('../../../user.model');
-const { RequestError } = require('../../../../helpers');
+const userModule = require('../../../users/user.model');
+const { RequestError } = require('../../../helpers');
 
 async function getEmail(email) {
    try {

@@ -1,5 +1,6 @@
-const userModule = require('../../../user.model');
-const { hash, RequestError } = require('../../../../helpers');
+const userModule = require('../../../users/user.model');
+const { RequestError } = require('../../../helpers');
+const { hash } = require('../../helpers');
 const { hashPassword } = hash;
 // const { sendVerificationToken } = require('../../handlerEmail/models');
 

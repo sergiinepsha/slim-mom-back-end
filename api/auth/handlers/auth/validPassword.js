@@ -1,4 +1,5 @@
-const { hash, RequestError } = require('../../../../helpers');
+const { RequestError } = require('../../../helpers');
+const { hash } = require('../../helpers');
 const { getHashPassword } = hash;
 
 async function validPassword(pass, user) {
