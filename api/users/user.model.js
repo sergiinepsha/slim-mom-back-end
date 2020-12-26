@@ -29,6 +29,7 @@ const userSchema = new Schema({
    status: { ...statusConfig },
    verificationToken: { ...authConfig },
    userData: { type: Object },
+   days: { type: Array },
    // todaySummary: [{ type: ObjectId, ref: 'todaySummary' }], // чтобы можно привязывать id к  данной строке надо использовать  ObjectId
    // user: [{ type: ObjectId, ref: 'user' }],
 });

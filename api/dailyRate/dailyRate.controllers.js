@@ -11,10 +11,8 @@ const dayModel = require('../day/day.model');
 async function dailyRate(req, res, next) {
    try {
       const userId = req.params.userId;
-      const user = req.user._doc;
       const { weight, height, age, desiredWeight, bloodType } = req.body;
       const dailyRate = 10 * weight + 6.25 * height - 5 * age - 161 - 10 * (weight - desiredWeight);
-
       const listProducts = await productModel.find();
       const random = Math.floor(Math.random() * listProducts.length);
       const randomProduct = listProducts[random].title.ru;
@@ -23,21 +21,12 @@ async function dailyRate(req, res, next) {
          const dailyRateData = { dailyRate, notAllowedProducts: [randomProduct] };
          return res.status(200).send(dailyRateData);
       }
+      const user = req.user._doc;
 
-      const date = new Date().toLocaleDateString('fr-ca');
-
+      const daySummary = await dayModel.find();
       const dailyRateData_withID = {
          dailyRate,
-         summaries: [
-            {
-               date,
-               kcalLeft: 1,
-               kcalConsumed: 12,
-               dailyRate: 12,
-               percentsOfDailyRate: 2,
-               userId,
-            },
-         ],
+         summaries: daySummary,
          notAllowedProducts: [[randomProduct]],
       };
 
@@ -48,7 +37,6 @@ async function dailyRate(req, res, next) {
             dailyRate,
          },
       };
-      //   console.log('objToUser', objToUser);
 
       const fromDataBase = await dailyRateModel.create(dailyRateData_withID);
       await userModel.findByIdAndUpdate(userId, objToUser);
