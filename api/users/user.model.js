@@ -3,7 +3,10 @@ const {
    Schema,
    Types: { ObjectId },
 } = require('mongoose');
-const authSchema = require('./auth/data/authSchema');
+
+const emailStatic = require('../auth/handlers/email/emailStatic');
+const authStatic = require('../auth/handlers/auth/authStatic');
+
 const user = 'user';
 
 const authConfig = { type: String, required: false };
@@ -31,15 +34,15 @@ const userSchema = new Schema({
 });
 
 //auth
-userSchema.statics.findUserByIdAndUpdate = authSchema.findUserByIdAndUpdate;
-userSchema.statics.findUserByEmail = authSchema.findUserByEmail;
-userSchema.statics.updateToken = authSchema.updateToken;
-userSchema.statics.updateAccessToken = authSchema.updateAccessToken; //TODO
-userSchema.statics.addTokensForUser = authSchema.addTokensForUser; //TODO
+userSchema.statics.findUserByIdAndUpdate = authStatic.findUserByIdAndUpdate;
+userSchema.statics.findUserByEmail = authStatic.findUserByEmail;
+userSchema.statics.updateToken = authStatic.updateToken;
+userSchema.statics.updateAccessToken = authStatic.updateAccessToken; //TODO
+userSchema.statics.addTokensForUser = authStatic.addTokensForUser; //TODO
 //verification of Email
-userSchema.statics.createVerificationToken = authSchema.createVerificationToken;
-userSchema.statics.fineByVerificationToken = authSchema.fineByVerificationToken;
-userSchema.statics.verifyUser = authSchema.verifyUser;
+userSchema.statics.createVerificationToken = emailStatic.createVerificationToken;
+userSchema.statics.fineByVerificationToken = emailStatic.fineByVerificationToken;
+userSchema.statics.verifyUser = emailStatic.verifyUser;
 
 const userModule = mongoose.model(user, userSchema);
 
