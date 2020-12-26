@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const authorize = require('../middleware/authorize');
+const authorize = require('../auth/middleware/authorize');
 
 const DayController = require('./day.controller');
 

@@ -8,7 +8,7 @@ const {
 const daySchema = new Schema({
    eatenProducts: { type: Array, required: true },
    date: { type: String, required: true },
-   daySummary: { type: ObjectId, required: true },
+   // daySummary: { type: ObjectId, required: true },
 });
 
 // MongoDB collection >>> products
