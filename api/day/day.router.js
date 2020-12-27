@@ -7,7 +7,7 @@ const dayRouter = Router();
 
 dayRouter.post('/', authorize, DayController.validateAddProduct, DayController.addProductPerDay);
 
-dayRouter.delete('/', authorize, DayController.deleteProductPerDay);
+dayRouter.delete('/', DayController.deleteProductPerDay);
 
 dayRouter.post('/info', authorize, DayController.infoPerDay);
 
