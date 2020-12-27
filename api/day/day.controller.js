@@ -85,18 +85,15 @@ async function deleteProductPerDay(req, res, next) {
    try {
       const { dayId, eatenProductId } = req.body;
 
-      const dayArrToUser = await dayModel.findById(dayId);
-      const qwert = dayArrToUser.eatenProducts;
-      const gfg = qwert.filter(f => f._id !== eatenProductId);
-      console.log(...gfg);
-      //   const response = {
-      //      date: dayFind.date,
-      //      kcalLeft: dayFind.daySummary.kcalLeft,
-      //      dailyRate: dayFind.daySummary.dailyRate,
-      //      percentsOfDailyRate: dayFind.daySummary.percentsOfDailyRate,
-      //      userId: dayFind.daySummary.userId,
-      //      id: dayId,
-      //   };
+      await dayModel
+         .findByIdAndUpdate(
+            dayId,
+            {
+               $pull: { eatenProducts: eatenProductId },
+            },
+            { new: true },
+         )
+         .populate(eatenProducts);
 
       return res.status(201).send();
    } catch (error) {
