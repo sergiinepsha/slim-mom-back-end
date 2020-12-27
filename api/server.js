@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
+const swaggerUi = require('swagger-ui-express'); ///
+
 const connectionOnDB = require('./connectionOnDB');
 
 const userRouter = require('./users/user.router');
@@ -9,6 +11,7 @@ const authRouter = require('./auth/auth.router');
 const productRouter = require('./products/product.router');
 const dailyRateRouters = require('./dailyRate/dailyRate.routers');
 const dayRouter = require('./day/day.router');
+const swaggerRouter = require('./swagger/swagger.router'); ///
 
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
@@ -47,6 +50,7 @@ module.exports = class SlimMomServer {
       this.server.use('/product', productRouter);
       this.server.use('/daily-rate', dailyRateRouters);
       this.server.use('/day', dayRouter);
+      this.server.use('/api-docs', swaggerRouter);
    }
 
    initDB() {
