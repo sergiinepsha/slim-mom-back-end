@@ -84,7 +84,71 @@
                   "description": "Название продукта (на русском языке), который вы хотите найти",
                   "required": true
                }
-            ]
+            ],
+            "responses": {
+               "200": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "object",
+                              "properties": {
+                                 "_id": {
+                                    "type": "string",
+                                    "example": "507f1f77bcf86cd799439011"
+                                 },
+                                 "categories": {
+                                    "type": "array",
+                                    "items": {
+                                       "type": "string",
+                                       "example": "яйца"
+                                    }
+                                 },
+                                 "weight": {
+                                    "type": "number",
+                                    "example": 100
+                                 },
+                                 "title": {
+                                    "type": "object",
+                                    "properties": {
+                                       "ru": {
+                                          "type": "string",
+                                          "example": "Меланж яичный"
+                                       },
+                                       "ua": {
+                                          "type": "string",
+                                          "example": "Меланж яєчний"
+                                       }
+                                    }
+                                 },
+                                 "calories": {
+                                    "type": "number",
+                                    "example": 157
+                                 },
+                                 "groupBloodNotAllowed": {
+                                    "type": "array",
+                                    "items": {
+                                       "oneOf": [{ "type": "null" }, { "type": "boolean" }]
+                                    },
+                                    "example": [null, true, false, false, false]
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "401": {
+                  "description": "User not authorized",
+                  "content": {}
+               },
+               "404": {
+                  "description": "Invalid query name / Not validations token",
+                  "content": {}
+               }
+            }
          }
       },
       "/day": {
