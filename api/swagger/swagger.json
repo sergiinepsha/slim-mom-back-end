@@ -1,0 +1,121 @@
+{
+   "openapi": "3.0.3",
+   "info": {
+      "version": "1.0.0",
+      "title": "Slimmom API docs",
+      "description": "API documentation for Node.js#2_Kharkiv project Slimmom. [Backend github repository](https://github.com/LeanNSP/slim-mom-back-end)",
+      "license": {
+         "name": "MIT",
+         "url": "https://opensource.org/licenses/MIT"
+      }
+   },
+   "servers": [{ "url": "http://localhost:3100/api-docs" }],
+   "consumes": ["application/json"],
+   "produces": ["application/json"],
+   "tags": [
+      {
+         "name": "Auth",
+         "description": "Authorization endpoints"
+      },
+      {
+         "name": "Daily-rate",
+         "description": "Daily-rate endpoints"
+      },
+      {
+         "name": "Products",
+         "description": "Get products endpoints"
+      },
+      {
+         "name": "Day",
+         "description": "Day endpoints"
+      },
+      {
+         "name": "User",
+         "description": "User endpoints"
+      }
+   ],
+   "paths": {
+      "/auth/register": {
+         "post": {
+            "tags": ["Auth"],
+            "summary": "Регистрация пользователя",
+            "parameters": []
+         }
+      },
+      "/auth/login": {
+         "post": {
+            "tags": ["Auth"],
+            "summary": "Вход пользователя",
+            "parameters": []
+         }
+      },
+      "/auth/logout": {
+         "post": {
+            "tags": ["Auth"],
+            "summary": "Выход пользователя",
+            "security": [{ "Bearer": [] }],
+            "parameters": []
+         }
+      },
+      "/daily-rate": {
+         "post": {
+            "tags": ["Daily-rate"],
+            "summary": "Просчитать свою суточную норму калорий",
+            "parameters": []
+         }
+      },
+      "/daily-rate/{userId}": {
+         "post": {
+            "tags": ["Daily-rate"],
+            "summary": "Разместить свои характеристики на сайте и просчитать свою суточную норму калорий",
+            "security": [{ "Bearer": [] }],
+            "parameters": []
+         }
+      },
+      "/product": {
+         "get": {
+            "tags": ["Products"],
+            "summary": "Поиск и получение списка продуктов по запросу",
+            "security": [{ "Bearer": [] }],
+            "parameters": [
+               {
+                  "name": "search",
+                  "in": "query",
+                  "description": "Название продукта (на русском языке), который вы хотите найти",
+                  "required": true
+               }
+            ]
+         }
+      },
+      "/day": {
+         "post": {
+            "tags": ["Day"],
+            "summary": "Добавить продукт в рацион",
+            "security": [{ "Bearer": [] }],
+            "parameters": []
+         },
+         "delete": {
+            "tags": ["Day"],
+            "summary": "Удалить продукт из рациона",
+            "security": [{ "Bearer": [] }],
+            "parameters": []
+         }
+      },
+      "/day/info": {
+         "post": {
+            "tags": ["Day"],
+            "summary": "Получить информацию за день",
+            "security": [{ "Bearer": [] }],
+            "parameters": []
+         }
+      },
+      "/user": {
+         "get": {
+            "tags": ["User"],
+            "summary": "Получить информацию пользователя",
+            "security": [{ "Bearer": [] }],
+            "parameters": []
+         }
+      }
+   }
+}
