@@ -6,7 +6,6 @@ const { authorize, validateSingIn, validateCreateUser } = require('./middleware'
 
 authRouter.post('/login', validateSingIn, AuthController.login);
 authRouter.post('/register', validateCreateUser, AuthController.createUser);
-authRouter.get('/current', authorize, AuthController.getCurrentUser);
 authRouter.patch('/logout', authorize, AuthController.logout);
 
 // authRouter.get('/verify/:verificationToken', AuthController.verifyUserByEmail);
