@@ -4,6 +4,7 @@ const { RequestError } = require('../../helpers');
 
 async function validateCreateUser(req, res, next) {
    try {
+      console.dir(req.body);
       const userTemple = await Joi.object({
          name: Joi.string().min(3).required(),
          email: Joi.string()
@@ -16,7 +17,10 @@ async function validateCreateUser(req, res, next) {
       const validated = await userTemple.validate(req.body);
 
       if (validated.error) {
-         throw new RequestError(validated.error.details[0].context.label, 400);
+         throw new RequestError(
+            `incorrect ${validated.error.details[0].context.label} or too short`,
+            400,
+         );
       }
 
       next();

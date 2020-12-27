@@ -51,7 +51,7 @@ async function validToken(token) {
    try {
       const verifyToken = await jwt.verify(token, JWT_SECRET);
       if (!verifyToken) {
-         throw new RequestError({ message: 'Not validations token' }, 404);
+         throw new RequestError('Not validations token', 404);
       }
       return verifyToken;
    } catch (error) {

@@ -15,7 +15,7 @@ async function validateSingIn(req, res, next) {
       const validated = await userTemple.validate(req.body);
 
       if (validated.error) {
-         throw new RequestError(validated.error.details[0].context.label, 401);
+         throw new RequestError(`Incorrect  ${validated.error.details[0].context.label}`, 401);
       }
 
       next();

@@ -11,7 +11,10 @@ async function createNewUser(data) {
       const validUser = await userModule.findUserByEmail(email);
 
       if (validUser) {
-         throw new RequestError('User do not create', 409);
+         throw new RequestError(
+            'You could not register or a user with such an email exists or something went wrong',
+            409,
+         );
       }
 
       const hashPass = await hashPassword(password);

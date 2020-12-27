@@ -17,8 +17,7 @@ module.exports = class ProductController {
 
          return res.status(200).json(products);
       } catch (error) {
-         // TODO: error handler
-         next();
+         next(new RequestError('Invalid query name', 404));
       }
    }
 };
