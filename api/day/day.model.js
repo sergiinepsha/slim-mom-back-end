@@ -1,5 +1,3 @@
-const { object } = require('joi');
-const { ObjectID } = require('mongodb');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const {
@@ -7,7 +5,7 @@ const {
 } = require('mongoose');
 
 const daySchema = new Schema({
-   eatenProducts: { type: Array, required: true },
+   eatenProducts: [],
    date: { type: String, required: true },
    daySummary: { type: Object, required: true },
 });

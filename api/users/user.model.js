@@ -6,6 +6,8 @@ const {
 
 const emailStatic = require('../auth/handlers/email/emailStatic');
 const authStatic = require('../auth/handlers/auth/authStatic');
+const { any } = require('joi');
+const { ObjectID } = require('mongodb');
 
 const user = 'user';
 
@@ -29,7 +31,7 @@ const userSchema = new Schema({
    status: { ...statusConfig },
    verificationToken: { ...authConfig },
    userData: { type: Object },
-   days: { type: Array },
+   days: [{ type: Object }],
    // todaySummary: [{ type: ObjectId, ref: 'todaySummary' }], // чтобы можно привязывать id к  данной строке надо использовать  ObjectId
    // user: [{ type: ObjectId, ref: 'user' }],
 });
