@@ -8,7 +8,7 @@ async function validPassword(pass, user) {
       const isPasswordValid = await getHashPassword(pass, password);
 
       if (!isPasswordValid) {
-         throw new RequestError('Password failed..', 401);
+         throw new RequestError('Email or password is wrong', 401);
       }
 
       return isPasswordValid;
