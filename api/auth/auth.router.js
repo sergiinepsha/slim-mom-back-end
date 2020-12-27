@@ -4,6 +4,34 @@ const authRouter = Router();
 const AuthController = require('./auth.controller');
 const { authorize, validateSingIn, validateCreateUser } = require('./middleware');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: User management
+ */
+
+/**
+ * @swagger
+ * path:
+ *  /auth/login:
+ *    post:
+ *      summary: Create a new user
+ *      tags: [Users]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/Auth.js'
+ *      responses:
+ *        "200":
+ *          description: A user schema
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/Auth.js'
+ */
 authRouter.post('/login', validateSingIn, AuthController.login);
 authRouter.post('/register', validateCreateUser, AuthController.createUser);
 authRouter.get('/current', authorize, AuthController.getCurrentUser);
