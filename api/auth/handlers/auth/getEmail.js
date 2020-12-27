@@ -3,11 +3,12 @@ const { RequestError } = require('../../../helpers');
 
 async function getEmail(email) {
    try {
-      const contact = await userModule.findUserByEmail(email);
-      if (!contact) {
-         throw new RequestError('Email in use', 409);
+      const user = await userModule.findUserByEmail(email);
+
+      if (!user) {
+         throw new RequestError('Email or password is wrong', 401);
       }
-      return contact;
+      return user;
    } catch (error) {
       throw error;
    }

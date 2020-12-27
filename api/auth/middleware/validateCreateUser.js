@@ -16,7 +16,10 @@ async function validateCreateUser(req, res, next) {
       const validated = await userTemple.validate(req.body);
 
       if (validated.error) {
-         throw new RequestError(validated.error.details[0].context.label, 400);
+         throw new RequestError(
+            `incorrect ${validated.error.details[0].context.label} or too short`,
+            400,
+         );
       }
 
       next();

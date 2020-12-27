@@ -84,16 +84,6 @@ class AuthController {
       }
    }
 
-   //GET /auth/current
-   async _getCurrentUser(req, res, next) {
-      try {
-         const userForResponse = this.prepareUserResponse(req.user);
-         return res.status(200).json(userForResponse);
-      } catch (error) {
-         next(error);
-      }
-   }
-
    //GET /auth/verify/:verification
    async _verifyUserByEmail(req, res, next) {
       try {
