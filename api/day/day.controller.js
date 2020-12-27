@@ -14,42 +14,74 @@ async function addProductPerDay(req, res, next) {
       if (!eatenProduct) {
          return res.status(404).send('Product not found');
       }
-
       const userId = req.user._id;
-      const eatenProducts = [eatenProduct];
-      const dailyRate = req.user.userData.dailyRate;
-      const kcalConsumed = (eatenProduct.calories * weight) / 100;
-      const kcalLeft = dailyRate - kcalConsumed;
-      const percentsOfDailyRate = (kcalConsumed / dailyRate) * 100;
       const daySummary = await dayModel.findOne({ date });
-
-      updDayData.daySummary.kcalConsumed = updDayData.day.eatenProducts.reduce(
-         (acc, { calories }) => acc + (calories * weight) / 100,
-         0,
-      );
-      updDayData.daySummary.dailyRate = 2500;
-      updDayData.daySummary.kcalLeft =
-         updDayData.daySummary.dailyRate - updDayData.daySummary.kcalConsumed;
-      updDayData.daySummary.percentsOfDailyRate =
-         (updDayData.daySummary.kcalConsumed / updDayData.daySummary.dailyRate) * 100;
-
+      //   если такой день уже записан то обновляем данные
       if (daySummary) {
-         const updDayData = daySummary;
-         updDayData.eatenProducts.push(eatenProduct);
+         daySummary._doc.eatenProducts.push(eatenProduct);
+         await dayModel.findByIdAndUpdate(daySummary._doc._id, daySummary);
 
-         const upData = await dayModel.findOneAndUpdate(date, updDayData);
-         return res.status(201).send(upData);
+         req.user._doc.days.push(daySummary._doc._id);
+         await userModel.findByIdAndUpdate(userId, req.user);
+
+         const dailyRate = req.user._doc.userData.dailyRate;
+         const kcalConsumed = daySummary._doc.eatenProducts.reduce(
+            (acc, { calories }) => acc + (calories * weight) / 100,
+            0,
+         );
+         const kcalLeft = dailyRate - kcalConsumed;
+         const percentsOfDailyRate = (kcalConsumed / dailyRate) * 100;
+
+         const eatenProductPerDayToClient = {
+            eatenProduct,
+            day: {
+               eatenProducts: daySummary._doc.eatenProducts,
+               date,
+               daySummary: daySummary._doc._id,
+            },
+            daySummary: {
+               date,
+               kcalLeft,
+               kcalConsumed,
+               dailyRate,
+               percentsOfDailyRate,
+               userId,
+            },
+         };
+
+         return res.status(201).send(eatenProductPerDayToClient);
       }
 
+      //   const eatenProducts = [];
+      //   eatenProducts.push(eatenProduct);
+
+      const eatenProducts = daySummary ? daySummary._doc.eatenProducts : [eatenProduct];
+      const dailyRate = req.user.userData.dailyRate;
+
+      const kcalConsumed = !daySummary
+         ? (eatenProduct.calories * weight) / 100
+         : eatenProducts.reduce((acc, { calories }) => acc + (calories * weight) / 100, 0);
+      const kcalLeft = dailyRate - kcalConsumed;
+      const percentsOfDailyRate = (kcalConsumed / dailyRate) * 100;
+      // обьект для добавления в day
       const objDayDB = {
          eatenProducts,
          date,
+         daySummary: {
+            kcalLeft,
+            kcalConsumed,
+            dailyRate,
+            percentsOfDailyRate,
+            userId,
+         },
       };
       await dayModel.create(objDayDB);
-
+      const dayId = await dayModel.findOne({ date });
+      // обьект для добавления в user.days[]
+      const day = { id: dayId._id, date };
       const objDayToUser = {
          ...req.user._doc,
-         days: [daySummary._id],
+         days: [day],
       };
 
       await userModel.findByIdAndUpdate(userId, objDayToUser);
@@ -75,6 +107,24 @@ async function addProductPerDay(req, res, next) {
       next(error);
    }
 }
+
+// async function updateProductPerDay(req, res, next) {
+//    try {
+//       const updateObj = {};
+//    } catch (error) {
+//       next(error);
+//    }
+//    updDayData.daySummary.kcalConsumed = updDayData.day.eatenProducts.reduce(
+//       (acc, { calories }) => acc + (calories * weight) / 100,
+//       0,
+//    );
+//    updDayData.daySummary.dailyRate = 2500;
+//    updDayData.daySummary.kcalLeft =
+//       updDayData.daySummary.dailyRate - updDayData.daySummary.kcalConsumed;
+//    updDayData.daySummary.percentsOfDailyRate =
+//       (updDayData.daySummary.kcalConsumed / updDayData.daySummary.dailyRate) * 100;
+// }
+
 async function deleteProductPerDay(req, res, next) {
    try {
       const { dayId, eatenProductId } = req.body;
