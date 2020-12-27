@@ -20,17 +20,6 @@ class AuthController {
    get verifyUserByEmail() {
       return this._verifyUserByEmail.bind(this);
    }
-   //test
-
-   get loginTest() {
-      return this._loginTest.bind(this);
-   }
-   get logoutTest() {
-      return this._logoutTest.bind(this);
-   }
-   get getCurrentUserTest() {
-      return this._getCurrentUserTest.bind(this);
-   }
 
    //GET /auth/verify/:verification
    async _verifyUserByEmail(req, res, next) {
@@ -55,7 +44,7 @@ class AuthController {
       }
    }
 
-   //PUT /auth/login
+   //POST /auth/login
    async _login(req, res, next) {
       try {
          const { email, password } = req.body;
@@ -65,17 +54,19 @@ class AuthController {
          await validPassword(password, userFromDb);
 
          const user = await addForUserTokens(userFromDb._id);
-         const userData = await this.prepareUserResponse(user);
 
-         return res.status(201).json(userData);
+         const userData = await this.prepareUserResponse(user);
+         return res.send(userData).status(201);
       } catch (error) {
          next(error);
       }
    }
 
-   //PATCH /auth/:contactId/logout
+   //post /auth/logout
+
    async _logout(req, res, next) {
       try {
+         console.log('>>>>>', req);
          const user = req.user;
          await updateUserToken(user.sid, null);
          return res.status(204).send();
