@@ -1,4 +1,5 @@
-const { getEmail, validPassword, createNewUser } = require('./handlers');
+const { now } = require('mongoose');
+const { getEmail, validPassword, createNewUser, verifyEmailToken } = require('./handlers');
 const { token } = require('./helpers');
 
 const { updateUserToken, addForUserTokens } = token;
@@ -18,6 +19,17 @@ class AuthController {
    }
    get verifyUserByEmail() {
       return this._verifyUserByEmail.bind(this);
+   }
+   //test
+
+   get loginTest() {
+      return this._loginTest.bind(this);
+   }
+   get logoutTest() {
+      return this._logoutTest.bind(this);
+   }
+   get getCurrentUserTest() {
+      return this._getCurrentUserTest.bind(this);
    }
 
    //GET /auth/verify/:verification
@@ -52,9 +64,10 @@ class AuthController {
 
          await validPassword(password, userFromDb);
 
-         const { accessToken, refreshToken, sid } = await addForUserTokens(userFromDb._id);
+         const user = await addForUserTokens(userFromDb._id);
+         const userData = await this.prepareUserResponse(user);
 
-         return res.status(201).json({ accessToken, refreshToken, sid });
+         return res.status(201).json(userData);
       } catch (error) {
          next(error);
       }
@@ -81,9 +94,35 @@ class AuthController {
       }
    }
 
+   //GET /auth/verify/:verification
+   async _verifyUserByEmail(req, res, next) {
+      try {
+         const { verificationToken } = req.params;
+
+         await verifyEmailToken(verificationToken);
+
+         return res.status(200).json();
+      } catch (error) {
+         next(error);
+      }
+   }
+
    prepareUserResponse(user) {
-      const { email, name, accessToken, refreshToken, sid } = user;
-      return { email, name, accessToken, refreshToken, sid };
+      const { email, name, userData, accessToken, refreshToken, sid, days } = user;
+      const nowDAte = new Date().toDateString();
+      const todaySummary = days.filter(value => new Date(value.date).toDateString() === nowDAte);
+      return {
+         accessToken,
+         refreshToken,
+         sid,
+         todaySummary,
+         user: {
+            email,
+            name,
+            userData,
+            id: sid,
+         },
+      };
    }
 }
 
