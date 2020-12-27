@@ -1,3 +1,4 @@
+const { any } = require('joi');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const {
@@ -5,7 +6,7 @@ const {
 } = require('mongoose');
 
 const daySchema = new Schema({
-   eatenProducts: [],
+   eatenProducts: { type: Array, required: true },
    date: { type: String, required: true },
    daySummary: { type: Object, required: true },
 });

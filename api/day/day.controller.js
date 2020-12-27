@@ -7,15 +7,20 @@ const {
 const productModel = require('../products/product.model');
 const userModel = require('../users/user.model');
 
+const { middleware } = require('./midlware');
+
 async function addProductPerDay(req, res, next) {
    try {
       const { date, productId, weight } = req.body;
+      const userId = req.user._id;
+      const dailyRate = req.user._doc.userData.dailyRate;
+
+      //   const objDayDB = middleware(date, productId, weight, userId, dailyRate);
+
       const eatenProduct = await productModel.findById(productId);
       if (!eatenProduct) {
          return res.status(404).send('Product not found');
       }
-      const userId = req.user._id;
-      const dailyRate = req.user._doc.userData.dailyRate;
       const daySummary = await dayModel.findOne({ date });
 
       if (daySummary) {
@@ -51,9 +56,8 @@ async function addProductPerDay(req, res, next) {
       req.user._doc.days = dayArrToUser.map(day => {
          return { id: day._id, date: day.date };
       });
-      const ggg = { ...req.user._doc };
-
-      await userModel.findByIdAndUpdate(userId, ggg);
+      const updateDay = { ...req.user._doc };
+      await userModel.findByIdAndUpdate(userId, updateDay);
 
       const eatenProductPerDayToClient = {
          eatenProduct,
@@ -80,28 +84,21 @@ async function addProductPerDay(req, res, next) {
 async function deleteProductPerDay(req, res, next) {
    try {
       const { dayId, eatenProductId } = req.body;
-      const dayFind = await dayModel.findById(dayId);
 
-      const AlleatenProducts = [...dayFind.eatenProducts];
-      //   const eatenProductsAfterDel = AlleatenProducts.filter(({ _id }) => {
-      //      console.log(_id);
-      //      console.log(eatenProductId);
-      //      return _id !== eatenProductId;
-      //   });
-      //   console.log('sdgdfgdfg', eatenProductsAfterDel);
+      const dayArrToUser = await dayModel.findById(dayId);
+      const qwert = dayArrToUser.eatenProducts;
+      const gfg = qwert.filter(f => f._id !== eatenProductId);
+      console.log(...gfg);
+      //   const response = {
+      //      date: dayFind.date,
+      //      kcalLeft: dayFind.daySummary.kcalLeft,
+      //      dailyRate: dayFind.daySummary.dailyRate,
+      //      percentsOfDailyRate: dayFind.daySummary.percentsOfDailyRate,
+      //      userId: dayFind.daySummary.userId,
+      //      id: dayId,
+      //   };
 
-      //   await dayModel.findByIdAndUpdate(dayId, findDay);
-
-      const response = {
-         date: dayFind.date,
-         kcalLeft: dayFind.daySummary.kcalLeft,
-         dailyRate: dayFind.daySummary.dailyRate,
-         percentsOfDailyRate: dayFind.daySummary.percentsOfDailyRate,
-         userId: dayFind.daySummary.userId,
-         id: dayId,
-      };
-
-      return res.status(201).send(response);
+      return res.status(201).send();
    } catch (error) {
       next(error);
    }
