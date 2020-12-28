@@ -5,8 +5,8 @@ const { JWT_SECRET } = process.env;
 const userModule = require('../../users/user.model');
 const { RequestError } = require('../../helpers');
 
-const { token } = require('../helpers');
-const { updateUserToken } = token;
+// const { token } = require('../helpers');
+// const { updateUserToken } = token;
 
 async function authorize(req, res, next) {
    try {
