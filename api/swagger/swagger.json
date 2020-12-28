@@ -38,8 +38,39 @@
       "/auth/register": {
          "post": {
             "tags": ["Auth"],
-            "summary": "Регистрация пользователя",
-            "parameters": []
+            "summary": "User registration",
+            "parameters": [],
+            "requestBody": {
+               "description": "Registration's object",
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/RegistrationRequest"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "201": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/RegistrationResponse"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "Bad request (invalid request body)",
+                  "content": {}
+               },
+               "409": {
+                  "description": "Provided email already exists",
+                  "content": {}
+               }
+            }
          }
       },
       "/auth/login": {
@@ -75,16 +106,36 @@
       "/product": {
          "get": {
             "tags": ["Products"],
-            "summary": "Поиск и получение списка продуктов по запросу",
+            "summary": "Search and get a list of products on request",
             "security": [{ "Bearer": [] }],
             "parameters": [
                {
                   "name": "search",
                   "in": "query",
-                  "description": "Название продукта (на русском языке), который вы хотите найти",
+                  "description": "Name of the product (in russian) that you want to find",
                   "required": true
                }
-            ]
+            ],
+            "responses": {
+               "200": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/ProductResponse"
+                        }
+                     }
+                  }
+               },
+               "401": {
+                  "description": "User not authorized",
+                  "content": {}
+               },
+               "404": {
+                  "description": "Invalid query name / Not validations token",
+                  "content": {}
+               }
+            }
          }
       },
       "/day": {
@@ -115,6 +166,115 @@
             "summary": "Получить информацию пользователя",
             "security": [{ "Bearer": [] }],
             "parameters": []
+         }
+      }
+   },
+   "components": {
+      "schemas": {
+         "RegistrationRequest": {
+            "required": ["email", "password", "name"],
+            "type": "object",
+            "properties": {
+               "email": {
+                  "type": "string",
+                  "description": "User's email",
+                  "format": "email"
+               },
+               "password": {
+                  "type": "string",
+                  "description": "User's password",
+                  "example": "123qwe"
+               },
+               "username": {
+                  "type": "string",
+                  "description": "User's name",
+                  "example": "Nina"
+               }
+            }
+         },
+         "RegistrationResponse": {
+            "type": "object",
+            "properties": {
+               "email": {
+                  "type": "string",
+                  "description": "User's email",
+                  "format": "email"
+               },
+               "name": {
+                  "type": "string",
+                  "description": "User's name",
+                  "example": "Nina"
+               },
+               "id": {
+                  "type": "string",
+                  "description": "User's id",
+                  "example": "507f1f77bcf86cd799439011"
+               }
+            }
+         },
+         "ProductResponse": {
+            "type": "array",
+            "items": {
+               "type": "object",
+               "properties": {
+                  "_id": {
+                     "type": "string",
+                     "description": "Product's id",
+                     "example": "507f1f77bcf86cd799439011"
+                  },
+                  "categories": {
+                     "type": "array",
+                     "items": {
+                        "type": "string",
+                        "description": "Product's category",
+                        "example": "яйца"
+                     }
+                  },
+                  "weight": {
+                     "type": "number",
+                     "description": "Product's weight (100g)",
+                     "example": 100
+                  },
+                  "title": {
+                     "type": "object",
+                     "description": "Product's russian and ukrainian titles",
+                     "properties": {
+                        "ru": {
+                           "type": "string",
+                           "example": "Меланж яичный"
+                        },
+                        "ua": {
+                           "type": "string",
+                           "example": "Меланж яєчний"
+                        }
+                     }
+                  },
+                  "calories": {
+                     "type": "number",
+                     "description": "Product's kcal for 100g",
+                     "example": 157
+                  },
+                  "groupBloodNotAllowed": {
+                     "type": "array",
+                     "description": "Product's allowed/not allowed status on all blood types (first item is null - 0 index in array)",
+                     "items": {
+                        "oneOf": [{ "type": "null" }, { "type": "boolean" }]
+                     },
+                     "example": [null, true, false, false, false]
+                  },
+                  "__v": {
+                     "type": "integer",
+                     "description": "MongoDB document service versionKey (ignore)"
+                  }
+               }
+            }
+         }
+      },
+      "securitySchemes": {
+         "Bearer": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
          }
       }
    }

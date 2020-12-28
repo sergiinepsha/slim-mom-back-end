@@ -43,7 +43,7 @@ module.exports = class SlimMomServer {
       this.server.use(morgan('combined'));
       this.server.use(express.urlencoded());
       this.server.use(express.json());
-      this.server.use(cors({ origin: `http://localhost:${3000}` }));
+      this.server.use(cors({ origin: `http://localhost:3000` })); //TODO: вставить адрес фронта с netlify
    }
 
    initRoutes() {
