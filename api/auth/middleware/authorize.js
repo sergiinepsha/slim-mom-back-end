@@ -12,7 +12,6 @@ async function authorize(req, res, next) {
    try {
       const authorizationHeader = req.get('Authorization' || '');
       const token = authorizationHeader.replace('Bearer ', '');
-
       const userId = await validationsToken(token);
       const user = await userModule.findById(userId);
 
