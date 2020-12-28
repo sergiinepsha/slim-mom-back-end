@@ -1,15 +1,14 @@
+const { ObjectID } = require('mongodb');
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
 const dailyRateSchema = new Schema({
-   weight: { type: Number, required: true },
-   height: { type: Number, required: true },
-   age: { type: Number, required: true },
-   desiredWeight: { type: Number, required: true },
-   bloodType: { type: Number, required: true, default: 1 },
+   dailyRate: { type: Number, required: true },
+   summaries: [],
+   notAllowedProducts: [[{ type: String, required: true }]],
 });
 
-const dailyRateModel = mongoose.model('Contact', dailyRateSchema);
+const dailyRateModel = mongoose.model('DailyRate', dailyRateSchema);
 
 module.exports = dailyRateModel;

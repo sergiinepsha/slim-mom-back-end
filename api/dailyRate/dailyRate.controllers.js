@@ -4,39 +4,44 @@ const {
    Types: { ObjectId },
 } = require('mongoose');
 
+const productModel = require('../products/product.model');
+const userModel = require('../users/user.model');
+const dayModel = require('../day/day.model');
+
 async function dailyRate(req, res, next) {
    try {
       const userId = req.params.userId;
-      const crDar = await dailyRateModel.create(req.body);
-      const { weight, height, age, desiredWeight, bloodType, _id, __v } = crDar;
-
-      const dailyRate =
-         10 * weight + 6.25 * height - 5 * age - 161 - 10 * (weight - desiredWeight) + bloodType;
+      const { weight, height, age, desiredWeight, bloodType } = req.body;
+      const dailyRate = 10 * weight + 6.25 * height - 5 * age - 161 - 10 * (weight - desiredWeight);
+      const listProducts = await productModel.find();
+      const random = Math.floor(Math.random() * listProducts.length);
+      const randomProduct = listProducts[random].title.ru;
 
       if (!userId) {
-         const dailyRateData = { dailyRate, notAllowedProducts: [] };
+         const dailyRateData = { dailyRate, notAllowedProducts: [randomProduct] };
          return res.status(200).send(dailyRateData);
       }
+      const user = req.user._doc;
 
+      const daySummary = await dayModel.find();
       const dailyRateData_withID = {
-         id: '',
          dailyRate,
-         summaries: [
-            {
-               _id,
-               date: '',
-               kcalLeft: '',
-               kcalConsumed: '',
-               dailyRate: '',
-               percentsOfDailyRate: '',
-               userId: '',
-               __v,
-            },
-         ],
-         notAllowedProducts: [['Яйцо куриное (желток сухой)']],
+         summaries: daySummary,
+         notAllowedProducts: [[randomProduct]],
       };
 
-      return res.status(200).send(dailyRateData_withID);
+      const objToUser = {
+         ...user,
+         userData: {
+            ...req.body,
+            dailyRate,
+         },
+      };
+
+      const fromDataBase = await dailyRateModel.create(dailyRateData_withID);
+      await userModel.findByIdAndUpdate(userId, objToUser);
+
+      return res.status(200).send(fromDataBase);
    } catch (error) {
       next(error);
    }
@@ -56,5 +61,12 @@ function validateDailyRate(req, res, next) {
    }
    next();
 }
+function validateId(req, res, next) {
+   const { userId } = req.params;
+   if (!ObjectId.isValid(userId)) {
+      return res.status(400).send();
+   }
+   next();
+}
 
-module.exports = { dailyRate, validateDailyRate };
+module.exports = { dailyRate, validateDailyRate, validateId };

@@ -11,6 +11,7 @@ module.exports = function connectionOnDB() {
       const connectDB = mongoose.connect(MONGODB_URL, {
          useNewUrlParser: true,
          useUnifiedTopology: true,
+         useFindAndModify: true,
       });
 
       if (connectDB) {

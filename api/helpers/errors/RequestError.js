@@ -3,6 +3,7 @@ class RequestError extends Error {
       super(message, status);
       this.message = message;
       this.status = status;
+      this.error = 'error';
       delete this.stack;
    }
 }

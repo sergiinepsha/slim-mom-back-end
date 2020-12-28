@@ -1,5 +1,6 @@
-const userModule = require('../../../user.model');
-const { hash, RequestError } = require('../../../../helpers');
+const userModule = require('../../../users/user.model');
+const { RequestError } = require('../../../helpers');
+const { hash } = require('../../helpers');
 const { hashPassword } = hash;
 // const { sendVerificationToken } = require('../../handlerEmail/models');
 
@@ -10,7 +11,10 @@ async function createNewUser(data) {
       const validUser = await userModule.findUserByEmail(email);
 
       if (validUser) {
-         throw new RequestError('User do not create', 409);
+         throw new RequestError(
+            'You could not register or a user with such an email exists or something went wrong',
+            409,
+         );
       }
 
       const hashPass = await hashPassword(password);
