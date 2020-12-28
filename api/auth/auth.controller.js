@@ -67,7 +67,6 @@ class AuthController {
 
    async _logout(req, res, next) {
       try {
-         console.log('>>>>>', req);
          const user = req.user;
          await updateUserToken(user.sid, null);
          return res.status(204).send();
