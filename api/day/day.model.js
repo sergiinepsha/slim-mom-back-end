@@ -6,7 +6,7 @@ const {
 } = require('mongoose');
 
 const daySchema = new Schema({
-   eatenProducts: { type: Array, required: true },
+   eatenProducts: [{ type: Object, required: true }],
    date: { type: String, required: true },
    daySummary: { type: Object, required: true },
 });

@@ -8,6 +8,7 @@ const productModel = require('../products/product.model');
 const userModel = require('../users/user.model');
 
 const { middleware } = require('./midlware');
+const { dailyRate } = require('../dailyRate/dailyRate.controllers');
 
 async function addProductPerDay(req, res, next) {
    try {
@@ -84,18 +85,49 @@ async function addProductPerDay(req, res, next) {
 async function deleteProductPerDay(req, res, next) {
    try {
       const { dayId, eatenProductId } = req.body;
+      const eatenProductsPerDay = await dayModel.findById(dayId);
+      const {
+         kcalLeft,
+         kcalConsumed,
+         dailyRate,
+         percentsOfDailyRate,
+         userId,
+      } = eatenProductsPerDay.daySummary;
 
-      await dayModel
-         .findByIdAndUpdate(
-            dayId,
-            {
-               $pull: { eatenProducts: eatenProductId },
-            },
-            { new: true },
-         )
-         .populate(eatenProducts);
+      //   //   eatenProductsPerDay.eatenProducts.push({ _id: eatenProductId });
+      eatenProductsPerDay._doc.eatenProducts.pull({ _id: eatenProductId });
+      eatenProductsPerDay.save();
+      //   //   console.log(ghg);
+      //   console.log(eatenProductsPerDay);
+      //   //   await dayModel.findByIdAndUpdate(dayId, eatenProductsPerDay);
 
-      return res.status(201).send();
+      //   const frf = eatenProductsPerDay.eatenProducts.filter(pr => pr._id !== eatenProductId);
+      //   console.log(frf);
+
+      const dfg = await dayModel.findOneAndUpdate(
+         { _id: dayId },
+         { $pull: { eatenProducts: { _id: eatenProductId } } },
+         { safe: true },
+         function (err, data) {
+            if (err) {
+               return res.status(500).json({ error: 'error in deleting address' });
+            }
+            res.json(data);
+         },
+         //  { new: true },
+      );
+      console.log(dfg);
+
+      const responseObj = {
+         date: eatenProductsPerDay.date,
+         kcalLeft,
+         kcalConsumed,
+         dailyRate,
+         percentsOfDailyRate,
+         userId,
+      };
+
+      //   return res.status(201).send(responseObj);
    } catch (error) {
       next(error);
    }
