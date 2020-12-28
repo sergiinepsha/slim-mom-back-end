@@ -5,7 +5,7 @@ const DayController = require('./day.controller');
 
 const dayRouter = Router();
 
-dayRouter.post('/', authorize, DayController.validateAddProduct, DayController.addProductPerDay);
+dayRouter.post('/', authorize, DayController.validateAddProduct, DayController.addProductPerDay); // TODO: authorize,
 
 dayRouter.delete('/', DayController.deleteProductPerDay);
 
