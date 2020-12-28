@@ -16,58 +16,19 @@ async function addProductPerDay(req, res, next) {
    }
 }
 
-// async function deleteProductPerDay(req, res, next) {}
-
 async function deleteProductPerDay(req, res, next) {
+   const { dayId, eatenProductId } = req.body;
+
    try {
-      const { dayId, eatenProductId } = req.body;
-      const eatenProductsPerDay = await dayModel.findById(dayId);
-      const {
-         kcalLeft,
-         kcalConsumed,
-         dailyRate,
-         percentsOfDailyRate,
-         userId,
-      } = eatenProductsPerDay.daySummary;
+      const daySummary = await ProductService.deleteProductPerDay(dayId, eatenProductId);
 
-      //   //   eatenProductsPerDay.eatenProducts.push({ _id: eatenProductId });
-      eatenProductsPerDay._doc.eatenProducts.pull({ _id: eatenProductId });
-      eatenProductsPerDay.save();
-      //   //   console.log(ghg);
-      //   console.log(eatenProductsPerDay);
-      //   //   await dayModel.findByIdAndUpdate(dayId, eatenProductsPerDay);
-
-      //   const frf = eatenProductsPerDay.eatenProducts.filter(pr => pr._id !== eatenProductId);
-      //   console.log(frf);
-
-      const dfg = await dayModel.findOneAndUpdate(
-         { _id: dayId },
-         { $pull: { eatenProducts: { _id: eatenProductId } } },
-         { safe: true },
-         function (err, data) {
-            if (err) {
-               return res.status(500).json({ error: 'error in deleting address' });
-            }
-            res.json(data);
-         },
-         //  { new: true },
-      );
-      console.log(dfg);
-
-      const responseObj = {
-         date: eatenProductsPerDay.date,
-         kcalLeft,
-         kcalConsumed,
-         dailyRate,
-         percentsOfDailyRate,
-         userId,
-      };
-
-      //   return res.status(201).send(responseObj);
+      console.log('daySummary', daySummary);
+      return res.status(200).json(daySummary);
    } catch (error) {
       next(error);
    }
 }
+
 async function infoPerDay(req, res, next) {}
 
 function validateAddProduct(req, res, next) {
@@ -92,7 +53,7 @@ function validateId(req, res, next) {
 module.exports = {
    addProductPerDay,
    deleteProductPerDay,
-   infoPerDay,
+   // infoPerDay,
    validateAddProduct,
    validateId,
 };
