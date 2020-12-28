@@ -7,7 +7,7 @@ class UserController {
 
    async _getUser(req, res, next) {
       try {
-         return res.status(200).send(req.user);
+         return res.status(200).json(req.user);
       } catch (error) {
          next(error);
       }

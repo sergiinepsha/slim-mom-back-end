@@ -37,8 +37,8 @@ class AuthController {
    //POST /auth/register
    async _createUser(req, res, next) {
       try {
-         const newUser = await createNewUser(req.body);
-         return await res.status(201).json(newUser);
+         await createNewUser(req.body);
+         return await res.status(201).send();
       } catch (error) {
          next(error);
       }
@@ -55,8 +55,9 @@ class AuthController {
 
          const user = await addForUserTokens(userFromDb._id);
 
-         const userData = await this.prepareUserResponse(user);
-         return res.send(userData).status(201);
+         const userData = this.prepareUserResponse(user);
+
+         return res.status(201).json(userData);
       } catch (error) {
          next(error);
       }
@@ -89,7 +90,7 @@ class AuthController {
    }
 
    prepareUserResponse(user) {
-      const { email, name, userData, accessToken, refreshToken, sid, days } = user;
+      const { _id, email, name, userData, accessToken, refreshToken, sid, days } = user;
       const nowDAte = new Date().toDateString();
       const todaySummary = days.filter(value => new Date(value.date).toDateString() === nowDAte);
       return {
@@ -101,7 +102,7 @@ class AuthController {
             email,
             name,
             userData,
-            id: sid,
+            _id,
          },
       };
    }
