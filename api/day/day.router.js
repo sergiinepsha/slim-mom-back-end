@@ -5,10 +5,10 @@ const DayController = require('./day.controller');
 
 const dayRouter = Router();
 
-dayRouter.post('/', authorize, DayController.validateAddProduct, DayController.addProductPerDay); // TODO: authorize,
+dayRouter.post('/', authorize, DayController.validateAddProduct, DayController.addProductPerDay);
 
-dayRouter.delete('/', DayController.deleteProductPerDay);
+dayRouter.delete('/', authorize, DayController.deleteProductPerDay);
 
-dayRouter.post('/info', authorize, DayController.infoPerDay);
+dayRouter.post('/info', authorize); // DayController.infoPerDay
 
 module.exports = dayRouter;

@@ -14,10 +14,11 @@ module.exports = async function createNewDay(eatenProduct, weight, userId, daily
    };
 
    const currentDay = await dayModel.create(newDay);
-   const dayId = currentDay._id;
+
+   const id = currentDay._id;
 
    await userModel.findByIdAndUpdate(userId, {
-      $push: { days: { dayId, date } },
+      $push: { days: { id, date } },
    });
    return currentDay;
 };
