@@ -1,0 +1,431 @@
+{
+   "paths": {
+      "/auth/register": {
+         "post": {
+            "tags": ["Auth"],
+            "summary": "User registration",
+            "parameters": [],
+            "requestBody": {
+               "description": "Registration's object",
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/RegistrationRequest"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "201": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/RegistrationResponse"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "Bad request (invalid request body)",
+                  "content": {}
+               },
+               "409": {
+                  "description": "Provided email already exists",
+                  "content": {}
+               }
+            }
+         }
+      },
+      "/auth/login": {
+         "post": {
+            "tags": ["Auth"],
+            "summary": "User authentication",
+            "parameters": [],
+            "requestBody": {
+               "description": "Authentication's object",
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/LoginRequest"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "200": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/LoginResponse"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "Bad request (invalid request body)",
+                  "content": {}
+               },
+               "403": {
+                  "description": "Email doesn't exist / Password is wrong",
+                  "content": {}
+               }
+            }
+         }
+      },
+      "/auth/logout": {
+         "post": {
+            "tags": ["Auth"],
+            "summary": "Logout",
+            "security": [{ "Bearer": [] }],
+            "parameters": [],
+            "responses": {
+               "204": {
+                  "description": "Successful operation"
+               },
+               "400": {
+                  "description": "No token provided",
+                  "content": {}
+               },
+               "401": {
+                  "description": "Unauthorized (invalid access token)",
+                  "content": {}
+               },
+               "404": {
+                  "description": "Invalid user / Invalid session",
+                  "content": {}
+               }
+            }
+         }
+      },
+      "/auth/refresh": {
+         "post": {
+            "tags": ["Auth"],
+            "summary": "Get new pair of tokens (use Bearer {refreshToken} instead of accessToken)",
+            "security": [{ "Bearer": [] }],
+            "parameters": [],
+            "requestBody": {
+               "description": "Request body with session's id",
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/RefreshTokensRequest"
+                     }
+                  }
+               },
+               "required": true
+            },
+            "responses": {
+               "200": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/RefreshTokensResponse"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "Bad request (invalid request body) / No token provided",
+                  "content": {}
+               },
+               "401": {
+                  "description": "Unauthorized (invalid refresh token)",
+                  "content": {}
+               },
+               "404": {
+                  "description": "Invalid user / Invalid session",
+                  "content": {}
+               }
+            }
+         }
+      },
+      "/daily-rate": {
+         "post": {
+            "tags": ["Daily-rate"],
+            "summary": "Get daily rate information based on your characteristics",
+            "parameters": [],
+            "requestBody": {
+               "description": "Object with user's characteristics",
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/DailyRateRequest"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "200": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/DailyRateResponse"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "Bad request (invalid request body)",
+                  "content": {}
+               }
+            }
+         }
+      },
+      "/daily-rate/{userId}": {
+         "post": {
+            "tags": ["Daily-rate"],
+            "summary": "Post your characteristics to the website and get daily rate information",
+            "security": [{ "Bearer": [] }],
+            "parameters": [
+               {
+                  "name": "userId",
+                  "in": "path",
+                  "description": "Id of the user",
+                  "required": true,
+                  "type": "string"
+               }
+            ],
+            "requestBody": {
+               "description": "Object with user's characteristics",
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/DailyRateRequest"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "200": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/DailyRateWithUserIdResponse"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "No token provided",
+                  "content": {}
+               },
+               "401": {
+                  "description": "Unauthorized (invalid access token)",
+                  "content": {}
+               },
+               "404": {
+                  "description": "Invalid user / Invalid session",
+                  "content": {}
+               }
+            }
+         }
+      },
+      "/product": {
+         "get": {
+            "tags": ["Product-search"],
+            "summary": "Search and get a list of products by query",
+            "security": [{ "Bearer": [] }],
+            "parameters": [
+               {
+                  "name": "search",
+                  "in": "query",
+                  "description": "Name of the product (in russian) you want to find",
+                  "required": true
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/ProductResponse"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "No token provided",
+                  "content": {}
+               },
+               "401": {
+                  "description": "Unauthorized (invalid access token)",
+                  "content": {}
+               },
+               "404": {
+                  "description": "Invalid query name / Invalid user / Invalid session",
+                  "content": {}
+               }
+            }
+         }
+      },
+      "/day": {
+         "post": {
+            "tags": ["Day"],
+            "summary": "Post an eaten product",
+            "security": [{ "Bearer": [] }],
+            "parameters": [],
+            "requestBody": {
+               "description": "Object with date and eaten product's id",
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/PostDayRequest"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "201": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/PostDayResponse"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "Bad request (invalid request body) / No token provided",
+                  "content": {}
+               },
+               "401": {
+                  "description": "Unauthorized (invalid access token)",
+                  "content": {}
+               },
+               "404": {
+                  "description": "Product not found / Habit not found / Invalid user / Invalid session",
+                  "content": {}
+               }
+            }
+         },
+         "delete": {
+            "tags": ["Day"],
+            "summary": "Delete eaten product",
+            "security": [{ "Bearer": [] }],
+            "parameters": [],
+            "requestBody": {
+               "description": "Object with eaten product's id you want to delete",
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/DeleteDayRequest"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "201": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/DeleteDayResponse"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "Bad request (invalid request body) / No token provided",
+                  "content": {}
+               },
+               "401": {
+                  "description": "Unauthorized (invalid access token)",
+                  "content": {}
+               },
+               "404": {
+                  "description": "Product not found / Day not found / Invalid user / Invalid session",
+                  "content": {}
+               }
+            }
+         }
+      },
+      "/day/info": {
+         "post": {
+            "tags": ["Day"],
+            "summary": "Get info for day",
+            "security": [{ "Bearer": [] }],
+            "parameters": [],
+            "requestBody": {
+               "description": "Object with date of the day you want to get info for",
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/GetDayRequest"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "200": {
+                  "description": "Successful operation / No such day found",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/GetDayResponse"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "Bad request (invalid request body) / No token provided",
+                  "content": {}
+               },
+               "401": {
+                  "description": "Unauthorized (invalid access token)",
+                  "content": {}
+               },
+               "404": {
+                  "description": "Invalid user / Invalid session",
+                  "content": {}
+               }
+            }
+         }
+      },
+      "/user": {
+         "get": {
+            "tags": ["User"],
+            "summary": "Get user info",
+            "security": [{ "Bearer": [] }],
+            "parameters": [],
+            "responses": {
+               "200": {
+                  "description": "Successful operation",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/GetUserInfo"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "No token provided",
+                  "content": {}
+               },
+               "401": {
+                  "description": "Unauthorized (invalid access token)",
+                  "content": {}
+               },
+               "404": {
+                  "description": "Invalid user / Invalid session",
+                  "content": {}
+               }
+            }
+         }
+      }
+   }
+}
