@@ -19,11 +19,11 @@ async function authorize(req, res, next) {
          throw new RequestError('User not authorized', 401);
       }
 
-      const validationsRefreshToken = await validationsToken(user.refreshToken);
-      const updateToken = await updateUserToken(validationsRefreshToken);
+      // const validationsRefreshToken = await validationsToken(user.refreshToken);
+      // const updateToken = await updateUserToken(validationsRefreshToken);
 
       req.user = user;
-      req.user.accessToken = updateToken;
+      // req.user.accessToken = updateToken;
       next();
    } catch (err) {
       next(err);
