@@ -5,8 +5,8 @@ const { JWT_SECRET } = process.env;
 const userModule = require('../../users/user.model');
 const { RequestError } = require('../../helpers');
 
-const { token } = require('../helpers');
-const { updateUserToken } = token;
+// const { token } = require('../helpers');
+// const { updateUserToken } = token;
 
 async function authorize(req, res, next) {
    try {
@@ -19,11 +19,11 @@ async function authorize(req, res, next) {
          throw new RequestError('User not authorized', 401);
       }
 
-      const validationsRefreshToken = await validationsToken(user.refreshToken);
-      const updateToken = await updateUserToken(validationsRefreshToken);
+      // const validationsRefreshToken = await validationsToken(user.refreshToken);
+      // const updateToken = await updateUserToken(validationsRefreshToken);
 
       req.user = user;
-      req.user.accessToken = updateToken;
+      // req.user.accessToken = updateToken;
       next();
    } catch (err) {
       next(err);
