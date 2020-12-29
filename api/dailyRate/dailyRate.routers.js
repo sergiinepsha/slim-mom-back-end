@@ -1,15 +1,23 @@
 const { Router } = require('express');
-const authorize = require('../auth/middleware/authorize');
-const dailyRateControllers = require('./dailyRate.controllers');
+
+const { authorize } = require('../auth/middleware');
+const DailyRateControllers = require('./dailyRate.controllers');
+const DailyRateValidators = require('./dailyRate.validators');
+
 const dailyRateRouters = Router();
 
-dailyRateRouters.post('/', dailyRateControllers.validateDailyRate, dailyRateControllers.dailyRate);
+dailyRateRouters.post(
+   '/',
+   DailyRateValidators.validateGetDailyRate,
+   DailyRateControllers.getDailyRate,
+);
 
 dailyRateRouters.post(
    '/:userId',
    authorize,
-   dailyRateControllers.validateDailyRate,
-   dailyRateControllers.dailyRate,
+   DailyRateValidators.validateGetDailyRate,
+   DailyRateValidators.validateId,
+   DailyRateControllers.getDailyRateUser,
 );
 
 module.exports = dailyRateRouters;
