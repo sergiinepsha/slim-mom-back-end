@@ -1,14 +1,14 @@
-const userModule = require('../../../users/user.model');
+const userModel = require('../../../users/user.model');
 const { RequestError } = require('../../../helpers');
 const { hash } = require('../../helpers');
 const { hashPassword } = hash;
 // const { sendVerificationToken } = require('../../handlerEmail/models');
 
-async function createNewUser(data) {
+const createNewUser = async data => {
    try {
       const { email, password } = data;
 
-      const validUser = await userModule.findUserByEmail(email);
+      const validUser = await userModel.findUserByEmail(email);
 
       if (validUser) {
          throw new RequestError(
@@ -19,7 +19,7 @@ async function createNewUser(data) {
 
       const hashPass = await hashPassword(password);
 
-      const newUser = await userModule.create({
+      const newUser = await userModel.create({
          ...data,
          password: hashPass,
       });
@@ -35,5 +35,5 @@ async function createNewUser(data) {
    } catch (error) {
       throw error;
    }
-}
+};
 module.exports = createNewUser;

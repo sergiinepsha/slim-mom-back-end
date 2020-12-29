@@ -2,9 +2,10 @@ const { RequestError } = require('../../../helpers');
 const { hash } = require('../../helpers');
 const { getHashPassword } = hash;
 
-async function validPassword(pass, user) {
+module.exports = validPassword = async (pass, user) => {
    try {
       const { password } = user;
+
       const isPasswordValid = await getHashPassword(pass, password);
 
       if (!isPasswordValid) {
@@ -15,6 +16,4 @@ async function validPassword(pass, user) {
    } catch (error) {
       throw error;
    }
-}
-
-module.exports = validPassword;
+};

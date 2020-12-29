@@ -7,7 +7,6 @@ const {
 const emailStatic = require('../auth/handlers/email/emailStatic');
 const authStatic = require('../auth/handlers/auth/authStatic');
 const userModelStatic = require('./user.model.static');
-const { ObjectID } = require('mongodb');
 
 const user = 'user';
 
@@ -59,6 +58,6 @@ userSchema.statics.findUserByIdAndUpdateDays = userModelStatic.findUserByIdAndUp
 // daily-rate
 userSchema.statics.findUserByIdAndUpdateUserData = userModelStatic.findUserByIdAndUpdateUserData;
 
-const userModule = mongoose.model(user, userSchema);
+const userModel = mongoose.model(user, userSchema);
 
-module.exports = userModule;
+module.exports = userModel;

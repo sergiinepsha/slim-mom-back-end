@@ -1,28 +1,16 @@
-const { now } = require('mongoose');
-const { getEmail, validPassword, createNewUser, verifyEmailToken } = require('./handlers');
+const {
+   getEmail,
+   validPassword,
+   createNewUser,
+   verifyEmailToken,
+   prepareUserResponse,
+} = require('./handlers');
 const { token } = require('./helpers');
 
 const { updateUserToken, addForUserTokens } = token;
 
 class AuthController {
-   get createUser() {
-      return this._createUser.bind(this);
-   }
-   get login() {
-      return this._login.bind(this);
-   }
-   get logout() {
-      return this._logout.bind(this);
-   }
-   get getCurrentUser() {
-      return this._getCurrentUser.bind(this);
-   }
-   get verifyUserByEmail() {
-      return this._verifyUserByEmail.bind(this);
-   }
-
-   //GET /auth/verify/:verification
-   async _verifyUserByEmail(req, res, next) {
+   static async verifyUserByEmail(req, res, next) {
       try {
          const { verificationToken } = req.params;
 
@@ -34,18 +22,17 @@ class AuthController {
       }
    }
 
-   //POST /auth/register
-   async _createUser(req, res, next) {
+   static async createUser(req, res, next) {
       try {
-         await createNewUser(req.body);
-         return await res.status(201).send();
+         const user = await createNewUser(req.body);
+
+         return await res.status(201).json(user);
       } catch (error) {
          next(error);
       }
    }
 
-   //POST /auth/login
-   async _login(req, res, next) {
+   static async login(req, res, next) {
       try {
          const { email, password } = req.body;
 
@@ -55,7 +42,7 @@ class AuthController {
 
          const user = await addForUserTokens(userFromDb._id);
 
-         const userData = this.prepareUserResponse(user);
+         const userData = prepareUserResponse(user);
 
          return res.status(201).json(userData);
       } catch (error) {
@@ -63,20 +50,19 @@ class AuthController {
       }
    }
 
-   //post /auth/logout
-
-   async _logout(req, res, next) {
+   static async logout(req, res, next) {
       try {
          const user = req.user;
+
          await updateUserToken(user.sid, null);
-         return res.status(204).send();
+
+         return res.status(204).end();
       } catch (error) {
          next(error);
       }
    }
 
-   //GET /auth/verify/:verification
-   async _verifyUserByEmail(req, res, next) {
+   static async verifyUserByEmail(req, res, next) {
       try {
          const { verificationToken } = req.params;
 
@@ -87,24 +73,6 @@ class AuthController {
          next(error);
       }
    }
-
-   prepareUserResponse(user) {
-      const { _id, email, name, userData, accessToken, refreshToken, sid, days } = user;
-      const nowDAte = new Date().toDateString();
-      const todaySummary = days.filter(value => new Date(value.date).toDateString() === nowDAte);
-      return {
-         accessToken,
-         refreshToken,
-         sid,
-         todaySummary,
-         user: {
-            email,
-            name,
-            userData,
-            _id,
-         },
-      };
-   }
 }
 
-module.exports = new AuthController();
+module.exports = AuthController;
