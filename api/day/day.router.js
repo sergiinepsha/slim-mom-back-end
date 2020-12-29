@@ -10,6 +10,6 @@ dayRouter.post('/', authorize, DayValidator.validateAddProduct, DayController.ad
 
 dayRouter.delete('/', authorize, DayController.deleteProductPerDay);
 
-dayRouter.post('/info', authorize); // DayController.infoPerDay
+dayRouter.post('/info', authorize, DayController.infoPerDay);
 
 module.exports = dayRouter;

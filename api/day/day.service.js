@@ -1,3 +1,4 @@
+const userModule = require('../users/user.model');
 const dayModel = require('./day.model');
 
 const {
@@ -39,6 +40,21 @@ module.exports = class ProductService {
          });
 
          return updateCurrentDay(dayId, updatedEatenProducts, daySummary);
+      } catch (error) {
+         throw error;
+      }
+   }
+
+   static async infoPerDay(date, userId, dailyRate) {
+      try {
+         const user = await userModule.findById(userId);
+         const userDay = user.days.find(day => day.date === date);
+
+         if (userDay) {
+            return await dayModel.findById(userDay.id);
+         }
+
+         return await createNewDay(null, null, userId, dailyRate, date);
       } catch (error) {
          throw error;
       }

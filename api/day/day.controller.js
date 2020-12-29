@@ -17,12 +17,23 @@ module.exports = class DayController {
       try {
          const daySummary = await ProductService.deleteProductPerDay(dayId, eatenProductId);
 
-         console.log('daySummary', daySummary);
          return res.status(200).json(daySummary);
       } catch (error) {
          next(error);
       }
    }
 
-   static async infoPerDay(req, res, next) {}
+   static async infoPerDay(req, res, next) {
+      const userId = req.user._id;
+      const { dailyRate } = req.user.userData;
+      const { date } = req.body;
+
+      try {
+         const dayInfo = await ProductService.infoPerDay(date, userId, dailyRate);
+
+         return res.status(200).json(dayInfo);
+      } catch (error) {
+         next(error);
+      }
+   }
 };
