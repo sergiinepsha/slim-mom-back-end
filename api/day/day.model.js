@@ -1,9 +1,5 @@
-const { any } = require('joi');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const {
-   Types: { ObjectId },
-} = require('mongoose');
 
 const daySchema = new Schema({
    eatenProducts: [
@@ -21,6 +17,35 @@ const daySchema = new Schema({
       percentsOfDailyRate: { type: Number, required: true },
    },
 });
+
+daySchema.statics.findDayByIdAndUpdateEatenProducts = findDayByIdAndUpdateEatenProducts;
+daySchema.statics.findDayByIdAndUpdateDaySummary = findDayByIdAndUpdateDaySummary;
+daySchema.statics.findDayByIdAndUpdateEatenProductsAndDaySummary = findDayByIdAndUpdateEatenProductsAndDaySummary;
+
+async function findDayByIdAndUpdateEatenProducts(dayId, productCalculated) {
+   return await this.findByIdAndUpdate(
+      dayId,
+      {
+         $push: { eatenProducts: productCalculated },
+      },
+      { new: true },
+   );
+}
+
+async function findDayByIdAndUpdateDaySummary(dayId, daySummary) {
+   return await this.findByIdAndUpdate(dayId, { daySummary }, { new: true });
+}
+
+async function findDayByIdAndUpdateEatenProductsAndDaySummary(
+   dayId,
+   updatedEatenProducts,
+   updatedDaySummary,
+) {
+   return await this.findByIdAndUpdate(dayId, {
+      eatenProducts: updatedEatenProducts,
+      daySummary: updatedDaySummary,
+   });
+}
 
 // MongoDB collection >>> products
 const dayModel = mongoose.model('Day', daySchema);

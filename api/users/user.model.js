@@ -45,6 +45,12 @@ userSchema.statics.addTokensForUser = authStatic.addTokensForUser; //TODO
 userSchema.statics.createVerificationToken = emailStatic.createVerificationToken;
 userSchema.statics.fineByVerificationToken = emailStatic.fineByVerificationToken;
 userSchema.statics.verifyUser = emailStatic.verifyUser;
+// day
+userSchema.statics.findUserByIdAndUpdateDays = findUserByIdAndUpdateDays;
+
+async function findUserByIdAndUpdateDays(userId, id, date) {
+   return await this.findByIdAndUpdate(userId, { $push: { days: { id, date } } });
+}
 
 const userModule = mongoose.model(user, userSchema);
 
