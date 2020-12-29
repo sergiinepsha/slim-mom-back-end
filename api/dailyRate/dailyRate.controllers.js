@@ -7,7 +7,7 @@ module.exports = class DailyRateControllers {
       try {
          const dailyRate = calculateDailyRate(req.body);
 
-         return res.status(200).json(dailyRate);
+         return res.status(200).json({ dailyRate, notAllowedProducts: [] });
       } catch (error) {
          next(new RequestError('Invalid data', 404));
       }
@@ -17,9 +17,9 @@ module.exports = class DailyRateControllers {
       const userId = req.params.userId;
 
       try {
-         const daySummary = await DailyRateService.getDailyRateUser(req.body, userId);
-
-         return res.status(200).json(daySummary);
+         const currentDay = await DailyRateService.getDailyRateUser(req.body, userId);
+         console.log(currentDay);
+         return res.status(200).json(currentDay);
       } catch (error) {
          next(new RequestError('Invalid data', 404));
       }
