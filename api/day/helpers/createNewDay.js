@@ -6,6 +6,7 @@ const calculateDaySummary = require('./calculateDaySummary');
 
 module.exports = async function createNewDay(eatenProduct, weight, userId, dailyRate, date) {
    const productCalculated = eatenProduct ? calculateEatenProduct(eatenProduct, weight) : null;
+
    const kcal = productCalculated ? productCalculated.kcal : 0;
 
    const newDay = {
@@ -13,6 +14,7 @@ module.exports = async function createNewDay(eatenProduct, weight, userId, daily
       date,
       daySummary: calculateDaySummary(kcal, dailyRate),
    };
+
    const currentDay = await dayModel.create(newDay);
 
    await userModel.findUserByIdAndUpdateDays(userId, currentDay);
