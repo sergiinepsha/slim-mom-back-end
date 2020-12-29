@@ -24,12 +24,12 @@ module.exports = class DailyRateService {
 
             const currentDay = await updateDaySummary(day, dailyRate);
 
-            return currentDay.daySummary;
+            return currentDay;
          }
 
          const currentDay = await createNewDay(null, null, userId, dailyRate, currentDate);
 
-         return currentDay.daySummary;
+         return currentDay;
       } catch (error) {
          throw error;
       }
