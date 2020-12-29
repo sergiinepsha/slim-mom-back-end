@@ -18,6 +18,7 @@ const daySchema = new Schema({
       dailyRate: { type: Number, required: true },
       percentsOfDailyRate: { type: Number, required: true },
    },
+   notAllowedProducts: { type: Array },
 });
 
 daySchema.statics.findDayByIdAndUpdateEatenProducts =
