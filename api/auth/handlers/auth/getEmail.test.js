@@ -1,9 +1,25 @@
+//mocha api/auth/handlers/auth/getEmail.test.js
 const sinon = require('sinon');
 const should = require('should');
 
 const userModule = require('../../../users/user.model');
 const { RequestError } = require('../../../helpers');
 const getEmail = require('./getEmail');
+
+describe('getEmail', () => {
+   // it('Get user by email from database', () => {
+   //    getEmail('bip@bip.com').should.be.eql({ email: 'bip@bip.com' });
+   // });
+   it('Get user by email from ', () => {
+      const email = getEmail('bip@bip.com');
+
+      email.should.containEql([{ email: 'bip@bip.com' }]);
+   });
+   it('Return throw', () => {
+      getEmail('Not Valid Name').should.be.rejected();
+   });
+});
+
 // async function getEmail(email) {
 //    try {
 //       const user = await userModule.findUserByEmail(email);
@@ -18,7 +34,3 @@ const getEmail = require('./getEmail');
 // }
 
 // module.exports = getEmail;
-
-describe('Get email from database', () => {
-   it('findUserByEmail', () => {}, timeout);
-});

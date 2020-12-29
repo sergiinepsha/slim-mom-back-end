@@ -52,7 +52,7 @@ async function deleteProductPerDay(req, res, next) {
          },
          //  { new: true },
       );
-      console.log(dfg);
+      console.log('deleteProductPerDay/dfg >>>>', dfg);
 
       const responseObj = {
          date: eatenProductsPerDay.date,

@@ -4,7 +4,7 @@
    "description": "",
    "main": "api/start.js",
    "scripts": {
-      "test": "nyc --reporter=html mocha test/test.js",
+      "test": "nyc --reporter=html mocha api",
       "start": "node api/start.js",
       "dev": "nodemon api/start.js --ignore db/"
    },
