@@ -1,4 +1,5 @@
 const ProductService = require('./product.service');
+const { RequestError } = require('../helpers');
 
 module.exports = class ProductController {
    /**

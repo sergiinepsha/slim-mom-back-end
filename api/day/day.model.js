@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+const dayModelStatic = require('./day.model.static');
+
 const daySchema = new Schema({
    eatenProducts: [
       {
@@ -18,34 +20,11 @@ const daySchema = new Schema({
    },
 });
 
-daySchema.statics.findDayByIdAndUpdateEatenProducts = findDayByIdAndUpdateEatenProducts;
-daySchema.statics.findDayByIdAndUpdateDaySummary = findDayByIdAndUpdateDaySummary;
-daySchema.statics.findDayByIdAndUpdateEatenProductsAndDaySummary = findDayByIdAndUpdateEatenProductsAndDaySummary;
-
-async function findDayByIdAndUpdateEatenProducts(dayId, productCalculated) {
-   return await this.findByIdAndUpdate(
-      dayId,
-      {
-         $push: { eatenProducts: productCalculated },
-      },
-      { new: true },
-   );
-}
-
-async function findDayByIdAndUpdateDaySummary(dayId, daySummary) {
-   return await this.findByIdAndUpdate(dayId, { daySummary }, { new: true });
-}
-
-async function findDayByIdAndUpdateEatenProductsAndDaySummary(
-   dayId,
-   updatedEatenProducts,
-   updatedDaySummary,
-) {
-   return await this.findByIdAndUpdate(dayId, {
-      eatenProducts: updatedEatenProducts,
-      daySummary: updatedDaySummary,
-   });
-}
+daySchema.statics.findDayByIdAndUpdateEatenProducts =
+   dayModelStatic.findDayByIdAndUpdateEatenProducts;
+daySchema.statics.findDayByIdAndUpdateDaySummary = dayModelStatic.findDayByIdAndUpdateDaySummary;
+daySchema.statics.findDayByIdAndUpdateEatenProductsAndDaySummary =
+   dayModelStatic.findDayByIdAndUpdateEatenProductsAndDaySummary;
 
 // MongoDB collection >>> products
 const dayModel = mongoose.model('Day', daySchema);

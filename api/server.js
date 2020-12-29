@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
-const swaggerUi = require('swagger-ui-express'); ///
 
 const connectionOnDB = require('./connectionOnDB');
 
@@ -11,7 +10,7 @@ const authRouter = require('./auth/auth.router');
 const productRouter = require('./products/product.router');
 const dailyRateRouters = require('./dailyRate/dailyRate.routers');
 const dayRouter = require('./day/day.router');
-const swaggerRouter = require('./swagger/swagger.router'); ///
+const swaggerRouter = require('./swagger/swagger.router');
 
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
