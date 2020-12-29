@@ -5,19 +5,19 @@ const calculateEatenProduct = require('./calculateEatenProduct');
 const calculateDaySummary = require('./calculateDaySummary');
 
 module.exports = async function createNewDay(eatenProduct, weight, userId, dailyRate, date) {
-   const productCalculated = calculateEatenProduct(eatenProduct, weight);
+   const productCalculated = eatenProduct ? calculateEatenProduct(eatenProduct, weight) : null;
+
+   const kcal = productCalculated ? productCalculated.kcal : 0;
 
    const newDay = {
-      eatenProducts: [productCalculated],
+      eatenProducts: productCalculated ? [productCalculated] : [],
       date,
-      daySummary: calculateDaySummary(productCalculated.kcal, dailyRate),
+      daySummary: calculateDaySummary(kcal, dailyRate),
    };
 
    const currentDay = await dayModel.create(newDay);
-   const dayId = currentDay._id;
 
-   await userModel.findByIdAndUpdate(userId, {
-      $push: { days: { dayId, date } },
-   });
+   await userModel.findUserByIdAndUpdateDays(userId, currentDay);
+
    return currentDay;
 };
