@@ -5,15 +5,11 @@ const calculateDaySummary = require('./calculateDaySummary');
 
 module.exports = async function updateExistingDay(eatenProduct, weight, dayId, dailyRate) {
    const productCalculated = calculateEatenProduct(eatenProduct, weight);
-   console.log('dayId', dayId);
-   const updatedDayEatenProducts = await dayModel.findByIdAndUpdate(
+
+   const updatedDayEatenProducts = await dayModel.findDayByIdAndUpdateEatenProducts(
       dayId,
-      {
-         $push: { eatenProducts: productCalculated },
-      },
-      { new: true },
+      productCalculated,
    );
-   console.log('updatedDayEatenProducts', updatedDayEatenProducts);
 
    const kcal = updatedDayEatenProducts.eatenProducts.reduce((sumCalories, product) => {
       return sumCalories + product.kcal;
@@ -21,5 +17,5 @@ module.exports = async function updateExistingDay(eatenProduct, weight, dayId, d
 
    const daySummary = calculateDaySummary(kcal, dailyRate);
 
-   return await dayModel.findByIdAndUpdate(dayId, { daySummary }, { new: true });
+   return await dayModel.findDayByIdAndUpdateDaySummary(dayId, daySummary);
 };

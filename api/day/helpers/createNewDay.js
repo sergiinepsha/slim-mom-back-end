@@ -17,8 +17,7 @@ module.exports = async function createNewDay(eatenProduct, weight, userId, daily
 
    const id = currentDay._id;
 
-   await userModel.findByIdAndUpdate(userId, {
-      $push: { days: { id, date } },
-   });
+   await userModel.findUserByIdAndUpdateDays(userId, id, date);
+
    return currentDay;
 };

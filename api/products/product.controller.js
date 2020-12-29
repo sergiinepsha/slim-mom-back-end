@@ -1,5 +1,3 @@
-const Joi = require('joi');
-
 const ProductService = require('./product.service');
 
 module.exports = class ProductController {

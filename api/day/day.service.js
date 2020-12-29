@@ -33,12 +33,10 @@ module.exports = class ProductService {
       try {
          const currentDay = await dayModel.findById(dayId);
          const { eatenProducts, daySummary } = currentDay;
-         console.log('currentDay', currentDay);
+
          const updatedEatenProducts = eatenProducts.filter(product => {
             return String(product._id) !== eatenProductId;
          });
-         console.log('updetedEatenProducts', updatedEatenProducts);
-         console.log('eatenProductId', eatenProductId);
 
          return updateCurrentDay(dayId, updatedEatenProducts, daySummary);
       } catch (error) {

@@ -9,11 +9,12 @@ module.exports = async function updateCurrentDay(dayId, updatedEatenProducts, da
       }, 0);
 
       const updatedDaySummary = calculateDaySummary(kcal, daySummary.dailyRate);
-      console.log('dayId', dayId);
-      await dayModel.findByIdAndUpdate(dayId, {
-         eatenProducts: updatedEatenProducts,
-         daySummary: updatedDaySummary,
-      });
+
+      await dayModel.findDayByIdAndUpdateEatenProductsAndDaySummary(
+         dayId,
+         updatedEatenProducts,
+         updatedDaySummary,
+      );
 
       return updatedDaySummary;
    } catch (error) {
