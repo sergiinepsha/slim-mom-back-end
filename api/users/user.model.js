@@ -6,7 +6,7 @@ const {
 
 const emailStatic = require('../auth/handlers/email/emailStatic');
 const authStatic = require('../auth/handlers/auth/authStatic');
-const { any } = require('joi');
+const userModelStatic = require('./user.model.static');
 const { ObjectID } = require('mongodb');
 
 const user = 'user';
@@ -31,7 +31,14 @@ const userSchema = new Schema({
    status: { ...statusConfig },
    verificationToken: { ...authConfig },
 
-   userData: { type: Object },
+   userData: {
+      weight: { type: Number, required: true, default: 0 },
+      height: { type: Number, required: true, default: 0 },
+      age: { type: Number, required: true, default: 0 },
+      desiredWeight: { type: Number, required: true, default: 0 },
+      bloodType: { type: Number, enum: [1, 2, 3, 4], default: 1 },
+      dailyRate: { type: Number, required: true, default: 0 },
+   },
    days: { type: Array },
 });
 
@@ -45,6 +52,12 @@ userSchema.statics.addTokensForUser = authStatic.addTokensForUser; //TODO
 userSchema.statics.createVerificationToken = emailStatic.createVerificationToken;
 userSchema.statics.fineByVerificationToken = emailStatic.fineByVerificationToken;
 userSchema.statics.verifyUser = emailStatic.verifyUser;
+
+// day
+userSchema.statics.findUserByIdAndUpdateDays = userModelStatic.findUserByIdAndUpdateDays;
+
+// daily-rate
+userSchema.statics.findUserByIdAndUpdateUserData = userModelStatic.findUserByIdAndUpdateUserData;
 
 const userModule = mongoose.model(user, userSchema);
 
