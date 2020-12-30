@@ -1,9 +1,7 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 const { JWT_SECRET } = process.env;
 
 const userModel = require('../../users/user.model');
-const { RequestError } = require('../../helpers');
 
 // const { token } = require('../helpers');
 // const { updateUserToken } = token;
@@ -19,7 +17,7 @@ module.exports = authorize = async (req, res, next) => {
       const user = await userModel.findById(userId);
 
       if (!user || user.accessToken !== token) {
-         throw new RequestError('User not authorized', 401);
+         throw new Error('User not authorized').code(401);
       }
 
       // const validationsRefreshToken = await validationsToken(user.refreshToken);
@@ -41,6 +39,6 @@ async function validationsToken(token) {
 
       return userId;
    } catch (err) {
-      throw new RequestError('User not authorized', 401);
+      throw new Error('User not authorized').code(401);
    }
 }

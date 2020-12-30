@@ -26,6 +26,7 @@ const mailOptions = (email, verifyToken, text) => {
 module.exports = sendVerificationToken = async user => {
    try {
       const verificationToken = uuid.v4();
+
       const updateId = await userModel.createVerificationToken(user._id, verificationToken);
 
       await transport.sendMail(

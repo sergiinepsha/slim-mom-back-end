@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { MONGODB_URL } = process.env;
 
-const connectionOnDB = () => {
+module.exports = connectionOnDB = () => {
    try {
       const connectDB = mongoose.connect(MONGODB_URL, {
          useNewUrlParser: true,
@@ -17,5 +17,3 @@ const connectionOnDB = () => {
       return new Error('Not connect db').code(500);
    }
 };
-
-module.exports = connectionOnDB;

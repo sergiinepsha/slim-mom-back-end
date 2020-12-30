@@ -1,10 +1,8 @@
 const Joi = require('joi');
 
-const { RequestError } = require('../../helpers');
-
-module.exports = validateSingIn = async (req, res, next) => {
+module.exports = validateSingIn = (req, res, next) => {
    try {
-      const userTemple = await Joi.object({
+      const userTemple = Joi.object({
          email: Joi.string()
             .min(3)
             .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'pw'] } }) // валидация мыла
@@ -12,10 +10,10 @@ module.exports = validateSingIn = async (req, res, next) => {
          password: Joi.string().min(3),
       });
 
-      const validated = await userTemple.validate(req.body);
+      const validated = userTemple.validate(req.body);
 
       if (validated.error) {
-         throw new RequestError(`Incorrect  ${validated.error.details[0].context.label}`, 401);
+         throw new Error(`Incorrect  ${validated.error.details[0].context.label}`).code(401);
       }
 
       next();
