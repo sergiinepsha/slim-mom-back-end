@@ -33,6 +33,7 @@ module.exports = class ProductService {
    static async deleteProductPerDay(dayId, eatenProductId) {
       try {
          const currentDay = await dayModel.findById(dayId);
+
          const { eatenProducts, daySummary } = currentDay;
 
          const updatedEatenProducts = eatenProducts.filter(product => {
@@ -48,6 +49,7 @@ module.exports = class ProductService {
    static async infoPerDay(date, userId, dailyRate) {
       try {
          const user = await userModel.findById(userId);
+
          const userDay = user.days.find(day => day.date === date);
 
          if (userDay) {
