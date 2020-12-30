@@ -9,7 +9,7 @@ const { token } = require('./helpers');
 
 const { updateUserToken, addForUserTokens } = token;
 
-class AuthController {
+module.exports = class AuthController {
    static async verifyUserByEmail(req, res, next) {
       try {
          const { verificationToken } = req.params;
@@ -73,6 +73,4 @@ class AuthController {
          next(error);
       }
    }
-}
-
-module.exports = AuthController;
+};
