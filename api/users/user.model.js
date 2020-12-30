@@ -18,6 +18,12 @@ const statusConfig = {
    default: 'Created',
 };
 
+//auth
+Schema.prototype.findUserByIdAndUpdate = authStatic.findUserByIdAndUpdate;
+Schema.prototype.findUserByEmail = authStatic.findUserByEmail;
+Schema.prototype.updateAccessToken = authStatic.updateAccessToken;
+Schema.prototype.addTokensForUser = authStatic.addTokensForUser;
+
 const userSchema = new Schema({
    name: { type: String, required: true },
    email: { type: String, required: true, unique: true },
@@ -44,7 +50,6 @@ const userSchema = new Schema({
 //auth
 userSchema.statics.findUserByIdAndUpdate = authStatic.findUserByIdAndUpdate;
 userSchema.statics.findUserByEmail = authStatic.findUserByEmail;
-userSchema.statics.updateToken = authStatic.updateToken;
 userSchema.statics.updateAccessToken = authStatic.updateAccessToken; //TODO
 userSchema.statics.addTokensForUser = authStatic.addTokensForUser; //TODO
 //verification of Email
