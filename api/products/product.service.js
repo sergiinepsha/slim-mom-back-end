@@ -10,11 +10,9 @@ module.exports = class ProductService {
       try {
          const products = await productModel.find();
 
-         const result = products.filter(({ title }) =>
+         return products.filter(({ title }) =>
             title.ru.toLowerCase().includes(search.toLowerCase()),
          );
-
-         return result;
       } catch (error) {
          throw error;
       }

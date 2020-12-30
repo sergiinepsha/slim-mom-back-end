@@ -12,11 +12,10 @@ module.exports = class ProductController {
          const { search } = req.query;
 
          const products = await ProductService.getProducts(search);
-         console.log(products);
 
          return res.status(200).json(products);
       } catch (error) {
-         next(new RequestError('Invalid query name', 404));
+         next(error);
       }
    }
 };

@@ -3,8 +3,6 @@ const {
    Types: { ObjectId },
 } = require('mongoose');
 
-const { RequestError } = require('../helpers');
-
 module.exports = class DailyRateValidators {
    static validateGetDailyRate(req, res, next) {
       const validationRules = Joi.object({
@@ -14,10 +12,13 @@ module.exports = class DailyRateValidators {
          desiredWeight: Joi.number().required(),
          bloodType: Joi.number().required(),
       });
+
       const val = validationRules.validate(req.body);
+
       if (val.error) {
-         throw new RequestError('Invalid data', 404);
+         throw new Error('Invalid data').code(404);
       }
+
       next();
    }
 
@@ -25,8 +26,9 @@ module.exports = class DailyRateValidators {
       const { userId } = req.params;
 
       if (!ObjectId.isValid(userId)) {
-         throw new RequestError('Invalid id', 404);
+         throw new Error('Invalid id').code(404);
       }
+
       next();
    }
 };

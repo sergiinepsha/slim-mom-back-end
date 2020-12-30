@@ -3,18 +3,9 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 
+const { apiRouter } = require('./router');
 const connectionOnDB = require('./connectionOnDB');
 
-const { RequestError } = require('./helpers');
-
-// const userRouter = require('./users/user.router');
-// const authRouter = require('./auth/auth.router');
-// const productRouter = require('./products/product.router');
-// const dailyRateRouters = require('./dailyRate/dailyRate.routers');
-// const dayRouter = require('./day/day.router');
-// const swaggerRouter = require('./swagger/swagger.router');
-
-const { apiRouter } = require('./router');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const { PORT } = process.env;
@@ -50,17 +41,16 @@ module.exports = class SlimMomServer {
    initRoutes() {
       this.server.use('/', apiRouter);
 
-      // this.server.use('/user', userRouter);
-      // this.server.use('/auth', authRouter);
-      // this.server.use('/product', productRouter);
-      // this.server.use('/daily-rate', dailyRateRouters);
-      // this.server.use('/day', dayRouter);
-      // this.server.use('/api-docs', swaggerRouter);
+      this.server.use((req, res, next) => {
+         const error = new Error('Resource not found');
+         error.code = 404;
+         next(error);
+      });
 
       this.server.use((err, req, res, next) => {
-         return res
-            .status(err.status || 500)
-            .json({ message: err.message || 'Something went wrong' });
+         const code = err.code || err.status || 500;
+         const message = err.message || 'Internal Server Error';
+         return res.status(code).json({ message });
       });
    }
 
