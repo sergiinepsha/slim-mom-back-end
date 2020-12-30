@@ -12,7 +12,11 @@ async function addTokensForUser(id, accessToken, refreshToken) {
 }
 
 async function findUserByEmail(email) {
-   return await this.findOne({ email });
+   try {
+      return await this.findOne({ email });
+   } catch (error) {
+      throw error;
+   }
 }
 
 module.exports = {
@@ -21,3 +25,61 @@ module.exports = {
    updateAccessToken,
    findUserByIdAndUpdate,
 };
+// module.exports = {
+//    findUserByEmail: async email => {
+//       try {
+//          console.dir(this);
+//          return await this.findOne({ email });
+//       } catch (error) {
+//          throw error;
+//       }
+//    },
+
+//    addTokensForUser: async (id, accessToken, refreshToken) => {
+//       try {
+//          return await this.findByIdAndUpdate(
+//             id,
+//             {
+//                accessToken,
+//                refreshToken,
+//                sid: id,
+//             },
+//             {
+//                new: true,
+//             },
+//          );
+//       } catch (error) {
+//          throw error;
+//       }
+//    },
+//    updateAccessToken: async (id, accessToken) => {
+//       try {
+//          return await this.findByIdAndUpdate(
+//             id,
+//             {
+//                accessToken,
+//             },
+//             {
+//                new: true,
+//             },
+//          );
+//       } catch (error) {
+//          throw error;
+//       }
+//    },
+//    findUserByIdAndUpdate: async (userID, newParams) => {
+//       try {
+//          return await this.findByIdAndUpdate(
+//             userID,
+//             {
+//                $set: newParams,
+//             },
+//             {
+//                new: true,
+//             },
+//          );
+//       } catch (error) {
+//          throw error;
+//       }
+//    },
+// };
