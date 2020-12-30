@@ -1,20 +1,18 @@
 const userModel = require('../../../users/user.model');
-const { RequestError } = require('../../../helpers');
 const { hash } = require('../../helpers');
 const { hashPassword } = hash;
 // const { sendVerificationToken } = require('../../handlerEmail/models');
 
-const createNewUser = async data => {
+module.exports = createNewUser = async data => {
    try {
       const { email, password } = data;
 
       const validUser = await userModel.findUserByEmail(email);
 
       if (validUser) {
-         throw new RequestError(
+         throw new Error(
             'You could not register or a user with such an email exists or something went wrong',
-            409,
-         );
+         ).code(409);
       }
 
       const hashPass = await hashPassword(password);
@@ -26,7 +24,7 @@ const createNewUser = async data => {
 
       // await sendVerificationToken(newUser);
 
-      const returnUser = await {
+      const returnUser = {
          name: newUser._doc.name,
          email: newUser._doc.email,
       };
@@ -36,4 +34,3 @@ const createNewUser = async data => {
       throw error;
    }
 };
-module.exports = createNewUser;
