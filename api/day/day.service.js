@@ -18,7 +18,7 @@ module.exports = class ProductService {
       try {
          const eatenProduct = await checkEatenProduct(productId);
 
-         const isSuchDay = userDays.find(day => day.date === date);
+         const isSuchDay = await userDays.find(day => day.date === date);
 
          const currentDay = isSuchDay
             ? updateExistingDay(eatenProduct, weight, isSuchDay.id, dailyRate)
