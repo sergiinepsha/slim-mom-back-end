@@ -1,17 +1,15 @@
-const userModule = require('../../../users/user.model');
-const { RequestError } = require('../../../helpers');
+const userModel = require('../../../users/user.model');
 
-async function getEmail(email) {
+module.exports = getEmail = async email => {
    try {
-      const user = await userModule.findUserByEmail(email);
+      const user = await userModel.findUserByEmail(email);
 
       if (!user) {
-         throw new RequestError('Email or password is wrong', 401);
+         throw new Error('Email or password is wrong').code(401);
       }
+
       return user;
    } catch (error) {
       throw error;
    }
-}
-
-module.exports = getEmail;
+};

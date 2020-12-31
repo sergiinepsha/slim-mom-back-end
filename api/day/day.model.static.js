@@ -1,15 +1,23 @@
 async function findDayByIdAndUpdateEatenProducts(dayId, productCalculated) {
-   return await this.findByIdAndUpdate(
-      dayId,
-      {
-         $push: { eatenProducts: productCalculated },
-      },
-      { new: true },
-   );
+   try {
+      return await this.findByIdAndUpdate(
+         dayId,
+         {
+            $push: { eatenProducts: productCalculated },
+         },
+         { new: true },
+      );
+   } catch (error) {
+      throw error;
+   }
 }
 
 async function findDayByIdAndUpdateDaySummary(dayId, daySummary) {
-   return await this.findByIdAndUpdate(dayId, { daySummary }, { new: true });
+   try {
+      return await this.findByIdAndUpdate(dayId, { daySummary }, { new: true });
+   } catch (error) {
+      throw error;
+   }
 }
 
 async function findDayByIdAndUpdateEatenProductsAndDaySummary(
@@ -17,10 +25,14 @@ async function findDayByIdAndUpdateEatenProductsAndDaySummary(
    updatedEatenProducts,
    updatedDaySummary,
 ) {
-   return await this.findByIdAndUpdate(dayId, {
-      eatenProducts: updatedEatenProducts,
-      daySummary: updatedDaySummary,
-   });
+   try {
+      return await this.findByIdAndUpdate(dayId, {
+         eatenProducts: updatedEatenProducts,
+         daySummary: updatedDaySummary,
+      });
+   } catch (error) {
+      throw error;
+   }
 }
 
 module.exports = {

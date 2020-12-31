@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const { MY_PASS_MAIL, MY_MAIL, PORT, _PORT } = process.env;
 
-const userModule = require('../../../users/user.model');
+const userModel = require('../../../users/user.model');
 
 const transport = nodemailer.createTransport({
    service: 'gmail',
@@ -14,19 +14,20 @@ const transport = nodemailer.createTransport({
    },
 });
 
-function mailOptions(email, verifyToken, text) {
+const mailOptions = (email, verifyToken, text) => {
    return {
       from: MY_MAIL,
       to: email,
       subject: 'Email verification',
       html: `<a href="http://localhost:${PORT || _PORT}/auth/verify/${verifyToken}">${text} </a>`,
    };
-}
+};
 
-async function sendVerificationToken(user) {
+module.exports = sendVerificationToken = async user => {
    try {
       const verificationToken = uuid.v4();
-      const updateId = await userModule.createVerificationToken(user._id, verificationToken);
+
+      const updateId = await userModel.createVerificationToken(user._id, verificationToken);
 
       await transport.sendMail(
          mailOptions(updateId.email, verificationToken, 'Your verification token'),
@@ -36,5 +37,4 @@ async function sendVerificationToken(user) {
    } catch (error) {
       throw error;
    }
-}
-module.exports = sendVerificationToken;
+};

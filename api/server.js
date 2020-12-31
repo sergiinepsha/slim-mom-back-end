@@ -3,14 +3,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 
+const { apiRouter } = require('./router');
 const connectionOnDB = require('./connectionOnDB');
-
-const userRouter = require('./users/user.router');
-const authRouter = require('./auth/auth.router');
-const productRouter = require('./products/product.router');
-const dailyRateRouters = require('./dailyRate/dailyRate.routers');
-const dayRouter = require('./day/day.router');
-const swaggerRouter = require('./swagger/swagger.router');
 
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
@@ -39,19 +33,24 @@ module.exports = class SlimMomServer {
    }
 
    initMiddlewares() {
-      this.server.use(morgan('combined'));
       this.server.use(express.urlencoded());
       this.server.use(express.json());
       this.server.use(cors({ origin: `http://localhost:3000` })); //TODO: вставить адрес фронта с netlify
    }
 
    initRoutes() {
-      this.server.use('/user', userRouter);
-      this.server.use('/auth', authRouter);
-      this.server.use('/product', productRouter);
-      this.server.use('/daily-rate', dailyRateRouters);
-      this.server.use('/day', dayRouter);
-      this.server.use('/api-docs', swaggerRouter);
+      this.server.use('/', apiRouter);
+
+      this.server.use((req, res, next) => {
+         const error = new Error('Resource not found').code(404);
+         next(error);
+      });
+
+      this.server.use((err, req, res, next) => {
+         const code = err.code || err.status || 500;
+         const message = err.message || 'Internal Server Error';
+         return res.status(code).json({ message });
+      });
    }
 
    initDB() {

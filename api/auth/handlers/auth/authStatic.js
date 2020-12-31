@@ -1,18 +1,38 @@
 //auth
 async function findUserByIdAndUpdate(userID, newParams) {
-   return await this.findByIdAndUpdate(userID, { $set: newParams }, { new: true });
+   try {
+      return await this.findByIdAndUpdate(userID, { $set: newParams }, { new: true });
+   } catch (error) {
+      throw error;
+   }
 }
 
 async function updateAccessToken(id, accessToken) {
-   return await this.findByIdAndUpdate(id, { accessToken }, { new: true });
+   try {
+      return await this.findByIdAndUpdate(id, { accessToken }, { new: true });
+   } catch (error) {
+      throw error;
+   }
 }
 
 async function addTokensForUser(id, accessToken, refreshToken) {
-   return await this.findByIdAndUpdate(id, { accessToken, refreshToken, sid: id }, { new: true });
+   try {
+      return await this.findByIdAndUpdate(
+         id,
+         { accessToken, refreshToken, sid: id },
+         { new: true },
+      );
+   } catch (error) {
+      throw error;
+   }
 }
 
 async function findUserByEmail(email) {
-   return await this.findOne({ email });
+   try {
+      return await this.findOne({ email });
+   } catch (error) {
+      throw error;
+   }
 }
 
 module.exports = {

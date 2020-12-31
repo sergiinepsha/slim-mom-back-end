@@ -7,7 +7,9 @@ module.exports = class DayValidator {
          productId: Joi.string().required(),
          weight: Joi.number().required(),
       });
+
       const val = validationRules.validate(req.body);
+
       if (val.error) {
          return res.status(400).send('invalid request body');
       }

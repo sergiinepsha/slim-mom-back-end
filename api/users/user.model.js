@@ -7,7 +7,6 @@ const {
 const emailStatic = require('../auth/handlers/email/emailStatic');
 const authStatic = require('../auth/handlers/auth/authStatic');
 const userModelStatic = require('./user.model.static');
-const { ObjectID } = require('mongodb');
 
 const user = 'user';
 
@@ -18,6 +17,12 @@ const statusConfig = {
    enum: ['Verified', 'Created'],
    default: 'Created',
 };
+
+//auth
+Schema.prototype.findUserByIdAndUpdate = authStatic.findUserByIdAndUpdate;
+Schema.prototype.findUserByEmail = authStatic.findUserByEmail;
+Schema.prototype.updateAccessToken = authStatic.updateAccessToken;
+Schema.prototype.addTokensForUser = authStatic.addTokensForUser;
 
 const userSchema = new Schema({
    name: { type: String, required: true },
@@ -45,7 +50,6 @@ const userSchema = new Schema({
 //auth
 userSchema.statics.findUserByIdAndUpdate = authStatic.findUserByIdAndUpdate;
 userSchema.statics.findUserByEmail = authStatic.findUserByEmail;
-userSchema.statics.updateToken = authStatic.updateToken;
 userSchema.statics.updateAccessToken = authStatic.updateAccessToken; //TODO
 userSchema.statics.addTokensForUser = authStatic.addTokensForUser; //TODO
 //verification of Email
@@ -59,6 +63,6 @@ userSchema.statics.findUserByIdAndUpdateDays = userModelStatic.findUserByIdAndUp
 // daily-rate
 userSchema.statics.findUserByIdAndUpdateUserData = userModelStatic.findUserByIdAndUpdateUserData;
 
-const userModule = mongoose.model(user, userSchema);
+const userModel = mongoose.model(user, userSchema);
 
-module.exports = userModule;
+module.exports = userModel;

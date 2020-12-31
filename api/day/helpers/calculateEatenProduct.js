@@ -1,4 +1,4 @@
-module.exports = function calculateEatenProduct(eatenProduct, weight) {
+module.exports = calculateEatenProduct = (eatenProduct, weight) => {
    const { title, calories } = eatenProduct;
    const kcal = (calories * weight) / eatenProduct.weight;
 

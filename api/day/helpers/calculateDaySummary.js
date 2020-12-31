@@ -1,4 +1,4 @@
-module.exports = function calculateDaySummary(kcal, dailyRate) {
+module.exports = calculateDaySummary = (kcal, dailyRate) => {
    return {
       kcalLeft: dailyRate - kcal,
       kcalConsumed: kcal,

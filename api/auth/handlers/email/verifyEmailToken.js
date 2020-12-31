@@ -1,18 +1,15 @@
-const userModule = require('../../../users/user.model');
-const { RequestError } = require('../../../helpers');
+const userModel = require('../../../users/user.model');
 
-async function verifyEmailToken(token) {
+module.exports = verifyEmailToken = async token => {
    try {
-      const userToken = await userModule.fineByVerificationToken(token);
+      const userToken = await userModel.fineByVerificationToken(token);
 
       if (!userToken) {
-         throw new RequestError('User not found', 404);
+         throw new Error('User not found').code(404);
       }
 
-      await userModule.verifyUser(userToken._id);
+      await userModel.verifyUser(userToken._id);
    } catch (error) {
       throw error;
    }
-}
-
-module.exports = verifyEmailToken;
+};

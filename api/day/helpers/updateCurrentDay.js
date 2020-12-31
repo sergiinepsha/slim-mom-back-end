@@ -2,7 +2,7 @@ const dayModel = require('../day.model');
 
 const calculateDaySummary = require('./calculateDaySummary');
 
-module.exports = async function updateCurrentDay(dayId, updatedEatenProducts, daySummary) {
+module.exports = updateCurrentDay = async (dayId, updatedEatenProducts, daySummary) => {
    try {
       const kcal = updatedEatenProducts.reduce((sumCalories, product) => {
          return sumCalories + product.kcal;

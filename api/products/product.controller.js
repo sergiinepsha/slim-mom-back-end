@@ -1,5 +1,4 @@
 const ProductService = require('./product.service');
-const { RequestError } = require('../helpers');
 
 module.exports = class ProductController {
    /**
@@ -12,11 +11,10 @@ module.exports = class ProductController {
          const { search } = req.query;
          console.log(req.query);
          const products = await ProductService.getProducts(search);
-         // console.log(products);
 
          return res.status(200).json(products);
       } catch (error) {
-         next(new RequestError('Invalid query name', 404));
+         next(error);
       }
    }
 };
