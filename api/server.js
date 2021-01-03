@@ -1,14 +1,12 @@
+'use strict';
+
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const path = require('path');
 
-const { apiRouter } = require('./router');
+const router = require('./router');
 const connectionOnDB = require('./connectionOnDB');
-
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
-
-const { PORT } = process.env;
+const config = require('./config');
 
 module.exports = class SlimMomServer {
    constructor() {
@@ -35,11 +33,11 @@ module.exports = class SlimMomServer {
    initMiddlewares() {
       this.server.use(express.urlencoded());
       this.server.use(express.json());
-      this.server.use(cors({ origin: `http://localhost:3000` })); //TODO: вставить адрес фронта с netlify
+      this.server.use(cors({ origin: config.corsUrl }));
    }
 
    initRoutes() {
-      this.server.use('/', apiRouter);
+      router(this.server);
 
       this.server.use((req, res, next) => {
          const error = new Error('Resource not found').code(404);
@@ -62,8 +60,8 @@ module.exports = class SlimMomServer {
    }
 
    startListening() {
-      return this.server.listen(PORT, () => {
-         console.log('\x1b[36m%s\x1b[0m', `Server started listening on port ${PORT}`);
+      return this.server.listen(config.port, () => {
+         console.log('\x1b[36m%s\x1b[0m', `Server started listening on port ${config.port}`);
       });
    }
 };
