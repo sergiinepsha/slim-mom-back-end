@@ -5,20 +5,23 @@ const should = require('should');
 const userModule = require('../../../users/user.model');
 const { RequestError } = require('../../../helpers');
 const getEmail = require('./getEmail');
+const connectionOnDB = require('../../../connectionOnDB');
 
+tes();
 describe('getEmail', () => {
    let testEmail;
    beforeEach(() => {
+      connectionOnDB();
       testEmail = getEmail('bip@bip.com');
    });
 
-   // it('Get user by email from database', () => {
-   //    getEmail('bip@bip.com').should.be.eql({ email: 'bip@bip.com' });
-   // });
+   it('Get user by email from database', () => {
+      should(testEmail).be.eql({ email: 'bip@bip.com' });
+   });
 
    it('Get user by email from ', () => {
       const email = { email: '' };
-      testEmail.should.be.fulfilledWith(email);
+      should(testEmail).should.be.fulfilledWith(email);
    });
 
    it('Return throw', () => {
