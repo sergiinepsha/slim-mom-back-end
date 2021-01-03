@@ -1,12 +1,8 @@
 const mongoose = require('mongoose');
-const path = require('path');
 
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
-
-const { RequestError } = require('./helpers');
 const { MONGODB_URL } = process.env;
 
-module.exports = function connectionOnDB() {
+const connectionOnDB = () => {
    try {
       const connectDB = mongoose.connect(MONGODB_URL, {
          useNewUrlParser: true,
@@ -18,6 +14,8 @@ module.exports = function connectionOnDB() {
          console.log('\x1b[33m%s\x1b[0m', 'Database connection successful');
       }
    } catch (error) {
-      return new RequestError('Not connect db', 500);
+      return new Error('Not connect db').code(500);
    }
 };
+
+module.exports = connectionOnDB;

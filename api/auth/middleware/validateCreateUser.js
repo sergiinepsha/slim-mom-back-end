@@ -2,9 +2,8 @@ const Joi = require('joi');
 
 const { RequestError } = require('../../helpers');
 
-async function validateCreateUser(req, res, next) {
+module.exports = validateCreateUser = async (req, res, next) => {
    try {
-      console.dir(req.body);
       const userTemple = await Joi.object({
          name: Joi.string().min(3).required(),
          email: Joi.string()
@@ -27,6 +26,4 @@ async function validateCreateUser(req, res, next) {
    } catch (error) {
       next(error);
    }
-}
-
-module.exports = validateCreateUser;
+};

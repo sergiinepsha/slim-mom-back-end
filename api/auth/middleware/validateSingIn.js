@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 const { RequestError } = require('../../helpers');
 
-async function validateSingIn(req, res, next) {
+module.exports = validateSingIn = async (req, res, next) => {
    try {
       const userTemple = await Joi.object({
          email: Joi.string()
@@ -22,6 +22,4 @@ async function validateSingIn(req, res, next) {
    } catch (error) {
       next(error);
    }
-}
-
-module.exports = validateSingIn;
+};
