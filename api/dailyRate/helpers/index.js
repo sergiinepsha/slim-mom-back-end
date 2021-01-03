@@ -1,1 +1,0 @@
-exports.calculateDailyRate = require('./calculateDailyRate');
