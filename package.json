@@ -4,10 +4,10 @@
    "description": "",
    "main": "api/start.js",
    "scripts": {
-      "test": "nyc --reporter=html mocha test/test.js && npm run mocha-tests",
+      "test": "nyc --reporter=html mocha test/test.js && npm run mocha-tests ",
       "start": "node api/start.js",
       "dev": "nodemon api/start.js --ignore db/",
-      "mocha-tests": "node ./node_modules/mocha/bin/mocha  \"api/**/*.test.js\""
+      "mocha-tests": "node ./node_modules/mocha/bin/mocha \"test/**/*.test.js\""
    },
    "author": "GoIT Team",
    "license": "ISC",

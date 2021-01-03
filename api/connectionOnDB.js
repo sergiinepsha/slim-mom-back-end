@@ -1,10 +1,12 @@
+'use strict';
+
 const mongoose = require('mongoose');
 
-const { MONGODB_URL } = process.env;
+const config = require('./config');
 
-const connectionOnDB = () => {
+module.exports = () => {
    try {
-      const connectDB = mongoose.connect(MONGODB_URL, {
+      const connectDB = mongoose.connect(config.mongodbUrl, {
          useNewUrlParser: true,
          useUnifiedTopology: true,
          useFindAndModify: true,
@@ -17,5 +19,3 @@ const connectionOnDB = () => {
       return new Error('Not connect db').code(500);
    }
 };
-
-module.exports = connectionOnDB;
