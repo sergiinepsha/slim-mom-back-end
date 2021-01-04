@@ -18,7 +18,9 @@ module.exports = class DailyRateValidators {
       const val = validationRules.validate(req.body);
 
       if (val.error) {
-         throw new Error('Invalid data').code(404);
+         const err = new Error('Invalid data');
+         err.code(404);
+         throw err;
       }
 
       next();
@@ -28,7 +30,9 @@ module.exports = class DailyRateValidators {
       const { userId } = req.params;
 
       if (!ObjectId.isValid(userId)) {
-         throw new Error('Invalid id').code(404);
+         const err = new Error('Invalid id');
+         err.code(404);
+         throw err;
       }
 
       next();

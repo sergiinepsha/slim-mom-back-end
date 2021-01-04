@@ -7,7 +7,9 @@ module.exports = async token => {
       const userToken = await userModel.fineByVerificationToken(token);
 
       if (!userToken) {
-         throw new Error('User not found').code(404);
+         const err = new Error('User not found');
+         err.code(404);
+         throw err;
       }
 
       await userModel.verifyUser(userToken._id);

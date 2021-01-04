@@ -17,9 +17,11 @@ module.exports = class AuthValidator {
          const validated = userTemple.validate(req.body);
 
          if (validated.error) {
-            throw new Error(
+            const err = new Error(
                `incorrect ${validated.error.details[0].context.label} or too short`,
-            ).code(400);
+            );
+            err.code(400);
+            throw err;
          }
 
          next();
@@ -41,7 +43,9 @@ module.exports = class AuthValidator {
          const validated = userTemple.validate(req.body);
 
          if (validated.error) {
-            throw new Error(`Incorrect  ${validated.error.details[0].context.label}`).code(401);
+            const err = new Error(`Incorrect  ${validated.error.details[0].context.label}`);
+            err.code(401);
+            throw err;
          }
 
          next();

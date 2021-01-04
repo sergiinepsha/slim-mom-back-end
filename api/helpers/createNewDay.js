@@ -6,7 +6,7 @@ const userModel = require('../models/user.model');
 const calculateEatenProduct = require('./calculateEatenProduct');
 const calculateDaySummary = require('./calculateDaySummary');
 
-module.exports = async (eatenProduct, weight, userId, dailyRate, date) => {
+module.exports = async (userId, dailyRate, date, eatenProduct, weight) => {
    try {
       const productCalculated = eatenProduct ? calculateEatenProduct(eatenProduct, weight) : null;
 

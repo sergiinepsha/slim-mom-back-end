@@ -27,7 +27,7 @@ module.exports = class DailyRateService {
             return currentDay;
          }
 
-         const currentDay = await createNewDay(null, null, userId, dailyRate, currentDate);
+         const currentDay = await createNewDay(userId, dailyRate, currentDate);
 
          return currentDay;
       } catch (error) {

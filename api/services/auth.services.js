@@ -13,7 +13,9 @@ module.exports = class AuthService {
          const user = await userModel.findById(userId);
 
          if (!user || user.accessToken !== token) {
-            throw new Error('User not authorized').code(401);
+            const err = new Error('User not authorized');
+            err.code(401);
+            throw err;
          }
 
          return user;
