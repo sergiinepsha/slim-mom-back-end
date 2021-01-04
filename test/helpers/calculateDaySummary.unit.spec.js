@@ -1,6 +1,8 @@
+'use strict';
+
 const calculateDaySummary = require('../../api/helpers/calculateDaySummary');
 
-describe('Unit test #calculateDaySummary', () => {
+describe('Unit test helpers #calculateDaySummary', () => {
    it('should return expected result', () => {
       const result = calculateDaySummary(20, 200);
 

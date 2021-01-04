@@ -8,7 +8,7 @@ module.exports = async email => {
 
       if (!user) {
          const err = new Error('Email or password is wrong');
-         err.code(401);
+         err.code = 401;
          throw err;
       }
 

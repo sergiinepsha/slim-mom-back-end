@@ -17,7 +17,7 @@ module.exports = () => {
       }
    } catch (error) {
       const err = new Error('Not connect db');
-      err.code(500);
+      err.code = 500;
       return err;
    }
 };

@@ -57,7 +57,7 @@ module.exports = {
 
       if (!verifyToken) {
          const err = new Error('User not authorized');
-         err.code(401);
+         err.code = 401;
          throw err;
       }
 

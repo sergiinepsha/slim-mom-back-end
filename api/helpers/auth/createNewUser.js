@@ -15,7 +15,7 @@ module.exports = async data => {
          const err = new Error(
             'You could not register or a user with such an email exists or something went wrong',
          );
-         err.code(409);
+         err.code = 409;
          throw err;
       }
 
