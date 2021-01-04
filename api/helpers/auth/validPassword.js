@@ -10,7 +10,9 @@ module.exports = async (pass, user) => {
       const isPasswordValid = await getHashPassword(pass, password);
 
       if (!isPasswordValid) {
-         throw new Error('Email or password is wrong').code(401);
+         const err = new Error('Email or password is wrong');
+         err.code(401);
+         throw err;
       }
 
       return isPasswordValid;

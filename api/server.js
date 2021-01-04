@@ -40,7 +40,8 @@ module.exports = class SlimMomServer {
       router(this.server);
 
       this.server.use((req, res, next) => {
-         const error = new Error('Resource not found').code(404);
+         const error = new Error('Resource not found');
+         error.code(404);
          next(error);
       });
 

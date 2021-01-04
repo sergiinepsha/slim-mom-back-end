@@ -12,9 +12,11 @@ module.exports = async data => {
       const validUser = await userModel.findUserByEmail(email);
 
       if (validUser) {
-         throw new Error(
+         const err = new Error(
             'You could not register or a user with such an email exists or something went wrong',
-         ).code(409);
+         );
+         err.code(409);
+         throw err;
       }
 
       const hashPass = await hashPassword(password);

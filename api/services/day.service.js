@@ -24,7 +24,7 @@ module.exports = class ProductService {
 
          const currentDay = isSuchDay
             ? updateExistingDay(eatenProduct, weight, isSuchDay.id, dailyRate)
-            : createNewDay(eatenProduct, weight, userId, dailyRate, date);
+            : createNewDay(userId, dailyRate, date, eatenProduct, weight);
 
          return currentDay;
       } catch (error) {
@@ -58,7 +58,7 @@ module.exports = class ProductService {
             return await dayModel.findById(userDay.id);
          }
 
-         return await createNewDay(null, null, userId, dailyRate, date);
+         return await createNewDay(userId, dailyRate, date);
       } catch (error) {
          throw error;
       }
