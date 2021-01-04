@@ -11,7 +11,7 @@ module.exports = async (pass, user) => {
 
       if (!isPasswordValid) {
          const err = new Error('Email or password is wrong');
-         err.code(401);
+         err.code = 401;
          throw err;
       }
 

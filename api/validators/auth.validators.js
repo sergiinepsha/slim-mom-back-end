@@ -20,7 +20,7 @@ module.exports = class AuthValidator {
             const err = new Error(
                `incorrect ${validated.error.details[0].context.label} or too short`,
             );
-            err.code(400);
+            err.code = 400;
             throw err;
          }
 
@@ -44,7 +44,7 @@ module.exports = class AuthValidator {
 
          if (validated.error) {
             const err = new Error(`Incorrect  ${validated.error.details[0].context.label}`);
-            err.code(401);
+            err.code = 401;
             throw err;
          }
 

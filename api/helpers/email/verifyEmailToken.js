@@ -8,7 +8,7 @@ module.exports = async token => {
 
       if (!userToken) {
          const err = new Error('User not found');
-         err.code(404);
+         err.code = 404;
          throw err;
       }
 

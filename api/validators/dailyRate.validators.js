@@ -19,7 +19,7 @@ module.exports = class DailyRateValidators {
 
       if (val.error) {
          const err = new Error('Invalid data');
-         err.code(404);
+         err.code = 404;
          throw err;
       }
 
@@ -31,7 +31,7 @@ module.exports = class DailyRateValidators {
 
       if (!ObjectId.isValid(userId)) {
          const err = new Error('Invalid id');
-         err.code(404);
+         err.code = 404;
          throw err;
       }
 

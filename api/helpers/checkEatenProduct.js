@@ -8,7 +8,7 @@ module.exports = async productId => {
 
       if (!eatenProduct) {
          const err = new Error('Product not found');
-         err.code(404);
+         err.code = 404;
          throw err;
       }
 
