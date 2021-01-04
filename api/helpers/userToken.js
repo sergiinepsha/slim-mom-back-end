@@ -56,7 +56,9 @@ module.exports = {
       const verifyToken = jwt.verify(token, config.jwtSecret);
 
       if (!verifyToken) {
-         throw new Error('User not authorized').code(401);
+         const err = new Error('User not authorized');
+         err.code(401);
+         throw err;
       }
 
       return verifyToken;

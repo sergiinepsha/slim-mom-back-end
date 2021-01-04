@@ -7,7 +7,9 @@ module.exports = async email => {
       const user = await userModel.findUserByEmail(email);
 
       if (!user) {
-         throw new Error('Email or password is wrong').code(401);
+         const err = new Error('Email or password is wrong');
+         err.code(401);
+         throw err;
       }
 
       return user;

@@ -16,6 +16,8 @@ module.exports = () => {
          console.log('\x1b[33m%s\x1b[0m', 'Database connection successful');
       }
    } catch (error) {
-      return new Error('Not connect db').code(500);
+      const err = new Error('Not connect db');
+      err.code(500);
+      return err;
    }
 };

@@ -7,7 +7,9 @@ module.exports = async productId => {
       const eatenProduct = await productModel.findById(productId);
 
       if (!eatenProduct) {
-         throw new Error('Product not found').code(404);
+         const err = new Error('Product not found');
+         err.code(404);
+         throw err;
       }
 
       return eatenProduct;
