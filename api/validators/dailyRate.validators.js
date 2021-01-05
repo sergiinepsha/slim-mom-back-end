@@ -1,9 +1,8 @@
 'use strict';
 
 const Joi = require('joi');
-const {
-   Types: { ObjectId },
-} = require('mongoose');
+
+const { checkedId } = require('../helpers');
 
 module.exports = class DailyRateValidators {
    static validateGetDailyRate(req, res, next) {
@@ -29,11 +28,7 @@ module.exports = class DailyRateValidators {
    static validateId(req, res, next) {
       const { userId } = req.params;
 
-      if (!ObjectId.isValid(userId)) {
-         const err = new Error('Invalid id');
-         err.code = 404;
-         throw err;
-      }
+      checkedId(userId);
 
       next();
    }

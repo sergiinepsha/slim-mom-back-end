@@ -9,6 +9,7 @@ exports.updateDaySummary = require('./updateDaySummary');
 exports.hash = require('./hash');
 exports.userToken = require('./userToken');
 exports.getUserIdFromToken = require('./getUserIdFromToken');
+exports.checkedId = require('./checkedId');
 //auth
 exports.getEmail = require('./auth/getEmail');
 exports.validPassword = require('./auth/validPassword');
