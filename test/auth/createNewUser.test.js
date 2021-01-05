@@ -1,24 +1,21 @@
+//mocha test/auth/createNewUser.test.js
+
 const sinon = require('sinon');
 const should = require('should');
 const mongoose = require('mongoose');
 
 const { createNewUser } = require('../../api/helpers');
+const { hash } = require('../../api/helpers');
 const connectionOnDB = require('../../api/connectionOnDB');
 const userModel = require('../../api/models/user.model');
+const { expectation } = require('sinon');
+const { hashPassword } = require('../../api/helpers/hash');
 
 // module.exports = async data => {
 //    try {
 //       const { email, password } = data;
 
 //       const validUser = await userModel.findUserByEmail(email);
-
-//       if (validUser) {
-//          const err = new Error(
-//             'You could not register or a user with such an email exists or something went wrong',
-//          );
-//          err.code = 409;
-//          throw err;
-//       }
 
 //       const hashPass = await hashPassword(password);
 
@@ -39,52 +36,94 @@ const userModel = require('../../api/models/user.model');
 // };
 
 describe('Function  helpers/createNewUser()', () => {
-   let data = { email: 'test@test.com', password: 'password' };
+   let data = { email: 'test@test.com', password: 'password', name: 'test' };
+
    let sandbox;
    let findUserByEmailStub;
+   let createStub;
+   let hashPasswordStub;
+   let errorNewUser;
    let actualResult;
-
-   before(async () => {
-      sandbox = sinon.createSandbox();
-      findUserByEmailStub = sandbox.replace(userModel, 'findUserByEmail', () => true);
-      try {
-         await createNewUser(data);
-      } catch (error) {
-         actualResult = error;
-      }
-   });
 
    beforeEach(async () => {});
 
-   afterEach(() => {
-      sandbox.restore();
-   });
+   afterEach(() => {});
 
-   after(() => {
-      sandbox.restore();
-      // mongoose.disconnect();
-   });
+   describe('User was found at database', () => {
+      beforeEach(async () => {
+         sandbox = sinon.createSandbox();
+         findUserByEmailStub = sandbox.stub(userModel, 'findUserByEmail');
+         findUserByEmailStub.resolves([true]);
 
-   describe('User creation was successful', () => {
-      it('Should call findUserByEmail ', () => {
-         // sinon.assert.calledOnce(findUserByEmailStub);
-         // sinon.assert.calledWithExactly(findUserByEmailStub, data.email);
+         try {
+            await createNewUser(data);
+         } catch (error) {
+            errorNewUser = error;
+         }
       });
-   });
 
-   describe('User creation was Error', () => {
+      afterEach(() => {
+         sandbox.restore();
+      });
+
+      it('The findUserByEmail function  was called once and accepted email ', () => {
+         sinon.assert.calledOnce(findUserByEmailStub);
+         sinon.assert.calledWithExactly(findUserByEmailStub, data.email);
+      });
+
       it('Throw error.code 409', () => {
-         // (actualResult instanceof Error).should.be.true();
-         actualResult.should.be.throw({
-            code: 409,
-         });
+         errorNewUser.code.should.be.equal(409);
       });
 
       it('Throw error.message true', () => {
-         actualResult.should.be.throw({
-            message:
-               'You could not register or a user with such an email exists or something went wrong',
-         });
+         errorNewUser.message.should.be.equal(
+            'You could not register or a user with such an email exists or something went wrong',
+         );
+      });
+   });
+
+   describe('User was not found at database', () => {
+      beforeEach(async () => {
+         sandbox = sinon.createSandbox();
+
+         findUserByEmailStub = sandbox.stub(userModel, 'findUserByEmail');
+         createStub = sandbox.stub(userModel, 'create');
+
+         findUserByEmailStub.resolves(false);
+
+         createStub.resolves([
+            {
+               _doc: {
+                  name: data.name,
+                  email: data.email,
+               },
+            },
+         ]);
+
+         try {
+            await createNewUser(data);
+         } catch (error) {
+            errorNewUser = error;
+         }
+      });
+
+      afterEach(() => {
+         sandbox.restore();
+      });
+
+      it('The findUserByEmail function  was called once ', () => {
+         sinon.assert.calledOnce(findUserByEmailStub);
+      });
+
+      it('The findUserByEmail function  accepted email', () => {
+         sinon.assert.calledWithExactly(findUserByEmailStub, data.email);
+      });
+
+      it('The creat function was called once ', () => {
+         sinon.assert.calledOnce(createStub);
+      });
+      it('The creat function accepted password', () => {
+         sinon.assert.calledWithExactly(createStub, { ...data, password: data.password });
       });
    });
 });
