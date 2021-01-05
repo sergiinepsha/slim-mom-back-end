@@ -204,25 +204,29 @@ describe('\n\n Acceptance tests router', () => {
    });
 
    describe('\n Acceptance tests day.router', () => {
-      const goodBody = {
-         date: currentDate,
-         productId: '5d51694802b2373622ff552d',
-         weight: 200,
-      };
-
-      const bodyWithBadDate = {
-         date: 'date',
-         productId: '5d51694802b2373622ff552d',
-         weight: 200,
-      };
-
-      const bodyWithBadProductId = {
-         date: currentDate,
-         productId: '5d51694802',
-         weight: 200,
-      };
-
       describe('POST /day', () => {
+         let dayId;
+
+         const productId = '5d51694802b2373622ff552d';
+
+         const goodBody = {
+            date: currentDate,
+            productId,
+            weight: 200,
+         };
+
+         const bodyWithBadDate = {
+            date: 'date',
+            productId: '5d51694802b2373622ff552d',
+            weight: 200,
+         };
+
+         const bodyWithBadProductId = {
+            date: currentDate,
+            productId: '5d51694802',
+            weight: 200,
+         };
+
          it('should return 401 Error: User not authorized', async () => {
             await request(server)
                .post(`/day`)
@@ -260,7 +264,7 @@ describe('\n\n Acceptance tests router', () => {
                   .expect(201);
 
                const resBody = res.body;
-               console.log('resBody', resBody);
+               dayId = resBody._id;
 
                resBody.should.have.property('_id').which.is.a.String();
                resBody.should.have.property('date').be.equal(currentDate).which.is.a.String();
@@ -284,6 +288,150 @@ describe('\n\n Acceptance tests router', () => {
                eatenProducts[0].should.have.property('title').be.equal('Омлет').which.is.a.String();
                eatenProducts[0].should.have.property('weight').be.equal(200).which.is.a.Number();
                eatenProducts[0].should.have.property('kcal').be.equal(368).which.is.a.Number();
+            });
+         });
+      });
+
+      describe('DELETE /day', () => {
+         context('when user created', () => {
+            let currentUser;
+            let currentDay;
+            const goodBody = {};
+            const bodyWithBadDate = { dayId: 10057, eatenProductId: 900212 };
+            const bodyWithBadDayId = { dayId: '10057' };
+            const bodyWithBadProductId = { eatenProductId: '900212' };
+
+            before(async () => {
+               const { _id } = createdUser;
+
+               currentUser = await userModel.findById(_id);
+
+               const dayId = currentUser.days[0].id;
+
+               currentDay = await dayModel.findById(dayId);
+
+               const eatenProductId = currentDay.eatenProducts[0]._id;
+
+               goodBody.dayId = dayId;
+               goodBody.eatenProductId = eatenProductId;
+
+               bodyWithBadDayId.eatenProductId = eatenProductId;
+
+               bodyWithBadProductId.dayId = dayId;
+            });
+
+            it('should return 401 Error: User not authorized', async () => {
+               await request(server)
+                  .delete(`/day`)
+                  .set('Content-Type', 'application/json')
+                  .set('Authorization', '')
+                  .send(goodBody)
+                  .expect(401);
+            });
+
+            context('when user authorized', () => {
+               it('should return 404 Error: Invalid request body', async () => {
+                  await request(server)
+                     .delete(`/day`)
+                     .set('Content-Type', 'application/json')
+                     .set('Authorization', authorizationHeader)
+                     .send(bodyWithBadDate)
+                     .expect(404);
+               });
+
+               it('should return 404 Error: Invalid id, bodyWithBadDayId', async () => {
+                  await request(server)
+                     .delete(`/day`)
+                     .set('Content-Type', 'application/json')
+                     .set('Authorization', authorizationHeader)
+                     .send(bodyWithBadDayId)
+                     .expect(404);
+               });
+
+               it('should return 404 Error: Invalid id, bodyWithBadProductId', async () => {
+                  await request(server)
+                     .delete(`/day`)
+                     .set('Content-Type', 'application/json')
+                     .set('Authorization', authorizationHeader)
+                     .send(bodyWithBadProductId)
+                     .expect(404);
+               });
+
+               it('should return the status 201 and data object', async () => {
+                  const res = await request(server)
+                     .delete(`/day`)
+                     .set('Content-Type', 'application/json')
+                     .set('Authorization', authorizationHeader)
+                     .send(goodBody)
+                     .expect(201);
+
+                  const resBody = res.body;
+
+                  resBody.should.have.property('kcalLeft').be.equal(1326.5).which.is.a.Number();
+                  resBody.should.have.property('kcalConsumed').be.equal(0).which.is.a.Number();
+                  resBody.should.have.property('dailyRate').be.equal(1326.5).which.is.a.Number();
+                  resBody.should.have
+                     .property('percentsOfDailyRate')
+                     .be.equal(0)
+                     .which.is.a.Number();
+               });
+            });
+         });
+      });
+
+      describe('POST /day/info', () => {
+         const goodBody = {
+            date: currentDate,
+         };
+
+         const bodyWithBadDate = {
+            date: 'date',
+         };
+
+         it('should return 401 Error: User not authorized', async () => {
+            await request(server)
+               .post(`/day/info`)
+               .set('Content-Type', 'application/json')
+               .set('Authorization', '')
+               .send(goodBody)
+               .expect(401);
+         });
+
+         context('when user authorized', () => {
+            it('should return 404 Error: Invalid request body', async () => {
+               await request(server)
+                  .post(`/day/info`)
+                  .set('Content-Type', 'application/json')
+                  .set('Authorization', authorizationHeader)
+                  .send(bodyWithBadDate)
+                  .expect(404);
+            });
+
+            it('should return the status 200 and data object', async () => {
+               const res = await request(server)
+                  .post(`/day/info`)
+                  .set('Content-Type', 'application/json')
+                  .set('Authorization', authorizationHeader)
+                  .send(goodBody)
+                  .expect(200);
+
+               const resBody = res.body;
+
+               resBody.should.have.property('_id').which.is.a.String();
+               resBody.should.have.property('date').be.equal(currentDate).which.is.a.String();
+               resBody.should.have.property('daySummary').which.is.a.Object();
+               resBody.should.have.property('eatenProducts').which.is.a.Array();
+               resBody.should.have.property('notAllowedProducts').which.is.a.Array();
+
+               const daySummary = resBody.daySummary;
+
+               daySummary.should.have.property('kcalLeft').be.equal(1326.5).which.is.a.Number();
+               daySummary.should.have.property('kcalConsumed').be.equal(0).which.is.a.Number();
+               daySummary.should.have.property('dailyRate').be.equal(1326.5).which.is.a.Number();
+               daySummary.should.have
+                  .property('percentsOfDailyRate')
+                  .be.equal(0)
+                  .which.is.a.Number();
             });
          });
       });

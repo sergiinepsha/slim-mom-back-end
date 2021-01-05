@@ -12,12 +12,23 @@ dayRouter.post(
    '/',
    AuthController.authorize,
    DayValidator.validateAddProduct,
-   DayValidator.validateId,
+   DayValidator.validateProductId,
    DayController.addProductPerDay,
 );
 
-dayRouter.delete('/', AuthController.authorize, DayController.deleteProductPerDay);
+dayRouter.delete(
+   '/',
+   AuthController.authorize,
+   DayValidator.validateDeleteProduct,
+   DayValidator.validateAllIds,
+   DayController.deleteProductPerDay,
+);
 
-dayRouter.post('/info', AuthController.authorize, DayController.infoPerDay);
+dayRouter.post(
+   '/info',
+   AuthController.authorize,
+   DayValidator.validateInfoDay,
+   DayController.infoPerDay,
+);
 
 module.exports = dayRouter;
