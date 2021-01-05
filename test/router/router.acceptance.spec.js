@@ -12,7 +12,9 @@ describe('\n\n Acceptance tests router', () => {
    let token;
    let authorizationHeader;
    let createdUser;
+
    const invalidUserId = '5ff42f13b3aea86';
+
    const currentDate = new Date().toLocaleDateString('fr-ca');
 
    const testUser = {
