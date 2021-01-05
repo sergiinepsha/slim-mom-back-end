@@ -9,8 +9,9 @@ require('./helpers/calculateDaySummary.unit.spec');
 require('./helpers/calculateDailyRate.unit.spec');
 
 //-------acceptance tests-------
+require('./router/router.acceptance.spec');
 //--//--//--//--//--//--//--//--
 
 //------test in progress--------
-require('./router/router.acceptance.spec');
+
 //------------------------------
