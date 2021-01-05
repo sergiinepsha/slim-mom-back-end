@@ -2,6 +2,8 @@
 
 const Joi = require('joi');
 
+const { checkedId } = require('../helpers');
+
 module.exports = class DayValidator {
    static validateAddProduct(req, res, next) {
       const validationRules = Joi.object({
@@ -13,8 +15,18 @@ module.exports = class DayValidator {
       const val = validationRules.validate(req.body);
 
       if (val.error) {
-         return res.status(400).send('invalid request body');
+         const err = new Error('Invalid request body');
+         err.code = 404;
+         throw err;
       }
+      next();
+   }
+
+   static validateId(req, res, next) {
+      const { productId } = req.body;
+
+      checkedId(productId);
+
       next();
    }
 };

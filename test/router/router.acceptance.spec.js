@@ -1,8 +1,11 @@
+'use strict';
+
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
 
 const SlimMomServer = require('../../api/server');
-const UserModel = require('../../api/models/user.model');
+const userModel = require('../../api/models/user.model');
+const dayModel = require('../../api/models/day.model');
 
 const config = require('../../api/config');
 const { jwtSecret } = config;
@@ -26,19 +29,21 @@ describe('\n\n Acceptance tests router', () => {
    before(async () => {
       server = new SlimMomServer().start();
 
-      createdUser = await UserModel.create(testUser);
+      createdUser = await userModel.create(testUser);
 
       const { _id } = createdUser;
 
       token = jwt.sign({ id: _id }, jwtSecret);
 
-      await UserModel.updateAccessToken(_id, token);
+      await userModel.updateAccessToken(_id, token);
 
       authorizationHeader = `Bearer ${token}`;
    });
 
    after(async () => {
-      await UserModel.findByIdAndDelete(createdUser._id);
+      const { days } = await userModel.findByIdAndDelete(createdUser._id);
+
+      await dayModel.findByIdAndDelete(days[0].id);
 
       server.close(() => {
          process.exit(0);
@@ -65,14 +70,14 @@ describe('\n\n Acceptance tests router', () => {
 
       describe('POST /daily-rate', () => {
          it('should return 404 Error: Invalid data', async () => {
-            const res = await request(server)
+            await request(server)
                .post('/daily-rate')
                .set('Content-Type', 'application/json')
                .send(badBody)
                .expect(404);
          });
 
-         it('should return the status 200', async () => {
+         it('should return the status 200 and data object', async () => {
             const res = await request(server)
                .post('/daily-rate')
                .set('Content-Type', 'application/json')
@@ -88,7 +93,7 @@ describe('\n\n Acceptance tests router', () => {
 
       describe('POST /daily-rate/:userId', () => {
          it('should return 401 Error: User not authorized', async () => {
-            const res = await request(server)
+            await request(server)
                .post(`/daily-rate/${createdUser._id}`)
                .set('Content-Type', 'application/json')
                .set('Authorization', '')
@@ -98,7 +103,7 @@ describe('\n\n Acceptance tests router', () => {
 
          context('when user authorized', () => {
             it('should return 404 Error: Invalid data', async () => {
-               const res = await request(server)
+               await request(server)
                   .post(`/daily-rate/${createdUser._id}`)
                   .set('Content-Type', 'application/json')
                   .set('Authorization', authorizationHeader)
@@ -107,7 +112,7 @@ describe('\n\n Acceptance tests router', () => {
             });
 
             it('should return 404 Error: Invalid id', async () => {
-               const res = await request(server)
+               await request(server)
                   .post(`/daily-rate/${invalidUserId}`)
                   .set('Content-Type', 'application/json')
                   .set('Authorization', authorizationHeader)
@@ -115,7 +120,7 @@ describe('\n\n Acceptance tests router', () => {
                   .expect(404);
             });
 
-            it('should return the status 200', async () => {
+            it('should return the status 200 and data object', async () => {
                const res = await request(server)
                   .post(`/daily-rate/${createdUser._id}`)
                   .set('Content-Type', 'application/json')
@@ -193,6 +198,92 @@ describe('\n\n Acceptance tests router', () => {
                resBody[0].should.have.property('weight').be.equal(100).which.is.a.Number();
 
                resBody[0].should.have.property('calories').be.equal(27).which.is.a.Number();
+            });
+         });
+      });
+   });
+
+   describe('\n Acceptance tests day.router', () => {
+      const goodBody = {
+         date: currentDate,
+         productId: '5d51694802b2373622ff552d',
+         weight: 200,
+      };
+
+      const bodyWithBadDate = {
+         date: 'date',
+         productId: '5d51694802b2373622ff552d',
+         weight: 200,
+      };
+
+      const bodyWithBadProductId = {
+         date: currentDate,
+         productId: '5d51694802',
+         weight: 200,
+      };
+
+      describe('POST /day', () => {
+         it('should return 401 Error: User not authorized', async () => {
+            await request(server)
+               .post(`/day`)
+               .set('Content-Type', 'application/json')
+               .set('Authorization', '')
+               .send(goodBody)
+               .expect(401);
+         });
+
+         context('when user authorized', () => {
+            it('should return 404 Error: Invalid request body', async () => {
+               await request(server)
+                  .post(`/day`)
+                  .set('Content-Type', 'application/json')
+                  .set('Authorization', authorizationHeader)
+                  .send(bodyWithBadDate)
+                  .expect(404);
+            });
+
+            it('should return 404 Error: Invalid id', async () => {
+               await request(server)
+                  .post(`/day`)
+                  .set('Content-Type', 'application/json')
+                  .set('Authorization', authorizationHeader)
+                  .send(bodyWithBadProductId)
+                  .expect(404);
+            });
+
+            it('should return the status 201 and data object', async () => {
+               const res = await request(server)
+                  .post(`/day`)
+                  .set('Content-Type', 'application/json')
+                  .set('Authorization', authorizationHeader)
+                  .send(goodBody)
+                  .expect(201);
+
+               const resBody = res.body;
+               console.log('resBody', resBody);
+
+               resBody.should.have.property('_id').which.is.a.String();
+               resBody.should.have.property('date').be.equal(currentDate).which.is.a.String();
+               resBody.should.have.property('daySummary').which.is.a.Object();
+               resBody.should.have.property('eatenProducts').which.is.a.Array();
+               resBody.should.have.property('notAllowedProducts').which.is.a.Array();
+
+               const daySummary = resBody.daySummary;
+
+               daySummary.should.have.property('kcalLeft').be.equal(958.5).which.is.a.Number();
+               daySummary.should.have.property('kcalConsumed').be.equal(368).which.is.a.Number();
+               daySummary.should.have.property('dailyRate').be.equal(1326.5).which.is.a.Number();
+               daySummary.should.have
+                  .property('percentsOfDailyRate')
+                  .be.equal(27.742178665661516)
+                  .which.is.a.Number();
+
+               const eatenProducts = resBody.eatenProducts;
+
+               eatenProducts[0].should.have.property('_id').which.is.a.String();
+               eatenProducts[0].should.have.property('title').be.equal('Омлет').which.is.a.String();
+               eatenProducts[0].should.have.property('weight').be.equal(200).which.is.a.Number();
+               eatenProducts[0].should.have.property('kcal').be.equal(368).which.is.a.Number();
             });
          });
       });
