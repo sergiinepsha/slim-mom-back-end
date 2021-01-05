@@ -12,6 +12,7 @@ dayRouter.post(
    '/',
    AuthController.authorize,
    DayValidator.validateAddProduct,
+   DayValidator.validateId,
    DayController.addProductPerDay,
 );
 
