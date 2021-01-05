@@ -16,14 +16,20 @@ describe('\n\n Acceptance tests router', () => {
    let authorizationHeader;
    let createdUser;
 
-   const invalidUserId = '5ff42f13b3aea86';
-
    const currentDate = new Date().toLocaleDateString('fr-ca');
 
    const testUser = {
       name: 'test',
       email: 'test@mail.com',
       password: 'password_hash',
+   };
+
+   const goodBodyDailyRate = {
+      weight: 90,
+      height: 170,
+      age: 35,
+      desiredWeight: 60,
+      bloodType: 3,
    };
 
    before(async () => {
@@ -60,13 +66,7 @@ describe('\n\n Acceptance tests router', () => {
          bloodType: 3,
       };
 
-      const goodBody = {
-         weight: 90,
-         height: 170,
-         age: 35,
-         desiredWeight: 60,
-         bloodType: 3,
-      };
+      const invalidUserId = '5ff42f13b3aea86';
 
       describe('POST /daily-rate', () => {
          it('should return 404 Error: Invalid data', async () => {
@@ -81,7 +81,7 @@ describe('\n\n Acceptance tests router', () => {
             const res = await request(server)
                .post('/daily-rate')
                .set('Content-Type', 'application/json')
-               .send(goodBody)
+               .send(goodBodyDailyRate)
                .expect(200);
 
             const resBody = res.body;
@@ -97,7 +97,7 @@ describe('\n\n Acceptance tests router', () => {
                .post(`/daily-rate/${createdUser._id}`)
                .set('Content-Type', 'application/json')
                .set('Authorization', '')
-               .send(goodBody)
+               .send(goodBodyDailyRate)
                .expect(401);
          });
 
@@ -116,7 +116,7 @@ describe('\n\n Acceptance tests router', () => {
                   .post(`/daily-rate/${invalidUserId}`)
                   .set('Content-Type', 'application/json')
                   .set('Authorization', authorizationHeader)
-                  .send(goodBody)
+                  .send(goodBodyDailyRate)
                   .expect(404);
             });
 
@@ -125,7 +125,7 @@ describe('\n\n Acceptance tests router', () => {
                   .post(`/daily-rate/${createdUser._id}`)
                   .set('Content-Type', 'application/json')
                   .set('Authorization', authorizationHeader)
-                  .send(goodBody)
+                  .send(goodBodyDailyRate)
                   .expect(200);
 
                const resBody = res.body;
@@ -264,7 +264,6 @@ describe('\n\n Acceptance tests router', () => {
                   .expect(201);
 
                const resBody = res.body;
-               dayId = resBody._id;
 
                resBody.should.have.property('_id').which.is.a.String();
                resBody.should.have.property('date').be.equal(currentDate).which.is.a.String();
@@ -432,6 +431,73 @@ describe('\n\n Acceptance tests router', () => {
                   .property('percentsOfDailyRate')
                   .be.equal(0)
                   .which.is.a.Number();
+            });
+         });
+      });
+   });
+
+   describe('\n Acceptance tests user.router', () => {
+      describe('GET /user', () => {
+         it('should return 401 Error: User not authorized', async () => {
+            await request(server)
+               .get('/user')
+               .set('Content-Type', 'application/json')
+               .set('Authorization', '')
+               .send({})
+               .expect(401);
+         });
+
+         context('when user authorized', () => {
+            it('should return the status 200 and user info', async () => {
+               const res = await request(server)
+                  .get('/user')
+                  .set('Content-Type', 'application/json')
+                  .set('Authorization', authorizationHeader)
+                  .send({})
+                  .expect(200);
+
+               const resBody = res.body;
+
+               resBody.should.have.property('_id').which.is.a.String();
+               resBody.should.have.property('name').be.equal(testUser.name).which.is.a.String();
+               resBody.should.have.property('email').be.equal(testUser.email).which.is.a.String();
+               resBody.should.have
+                  .property('password')
+                  .be.equal(testUser.password)
+                  .which.is.a.String();
+               resBody.should.have.property('accessToken').be.equal(token).which.is.a.String();
+               resBody.should.have.property('status').be.equal('Created').which.is.a.String();
+               resBody.should.have.property('userData').which.is.a.Object();
+               resBody.should.have.property('days').which.is.a.Array();
+
+               const userData = resBody.userData;
+
+               userData.should.have
+                  .property('weight')
+                  .be.equal(goodBodyDailyRate.weight)
+                  .which.is.a.Number();
+               userData.should.have
+                  .property('height')
+                  .be.equal(goodBodyDailyRate.height)
+                  .which.is.a.Number();
+               userData.should.have
+                  .property('age')
+                  .be.equal(goodBodyDailyRate.age)
+                  .which.is.a.Number();
+               userData.should.have
+                  .property('desiredWeight')
+                  .be.equal(goodBodyDailyRate.desiredWeight)
+                  .which.is.a.Number();
+               userData.should.have
+                  .property('bloodType')
+                  .be.equal(goodBodyDailyRate.bloodType)
+                  .which.is.a.Number();
+               userData.should.have.property('dailyRate').be.equal(1326.5).which.is.a.Number();
+
+               const userDay = resBody.days[0];
+
+               userDay.should.have.property('id').which.is.a.String();
+               userDay.should.have.property('date').be.equal(currentDate).which.is.a.String();
             });
          });
       });
