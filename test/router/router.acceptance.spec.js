@@ -340,7 +340,7 @@ describe('\n\n Acceptance tests router', () => {
             };
 
             const bodyWithBadDate = {
-               date: 'date',
+               date: null,
                productId: '5d51694802b2373622ff552d',
                weight: 200,
             };
