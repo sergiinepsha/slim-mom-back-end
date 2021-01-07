@@ -2,42 +2,38 @@ const sinon = require('sinon');
 const should = require('should');
 const mongoose = require('mongoose');
 
-const { validPassword, getEmail } = require('../../api/helpers');
-const connectionOnDB = require('../../api/connectionOnDB');
+const { validPassword } = require('../../api/helpers');
+const hash = require('../../api/helpers/hash');
+const { hashPassword } = require('../../api/helpers/hash');
 
 describe('Function helpers/validPassword()', () => {
-   let emailTest = 'bip@bip.com';
-   let getUser;
-   let validTrue;
-
-   before(async () => {
-      await connectionOnDB();
-   });
-
-   beforeEach(async () => {
-      getUser = await getEmail(emailTest);
-      validTrue = await validPassword('123123', getUser);
-   });
-   afterEach(() => {});
-
-   after(() => {
-      mongoose.disconnect();
-   });
-
-   describe('Password is valid and returned data', () => {
-      it('Returned true', async () => {
-         await validTrue.should.be.true();
-      });
-   });
+   let data = { password: '123123' };
+   let hashPass;
+   let errorPass;
 
    describe('Password is not valid and some error', () => {
-      it('It throw error status 401', async () => {
-         return await validPassword('errorPass', getUser).should.be.rejectedWith(Error, {
+      before(async () => {
+         try {
+            validTrue = await validPassword(data.password, data);
+         } catch (error) {
+            errorPass = error;
+         }
+      });
+      after(() => {
+         sinon.restore();
+      });
+
+      it('Should throw error ', () => {
+         errorPass.should.be.Error();
+      });
+
+      it('It throw error status 401', () => {
+         errorPass.should.be.containDeep({
             code: 401,
          });
       });
-      it('It throw error message true', async () => {
-         return await validPassword('errorPass', getUser).should.be.rejectedWith(Error, {
+      it('It throw error message true', () => {
+         errorPass.should.be.containDeep({
             message: 'Email or password is wrong',
          });
       });
@@ -45,6 +41,33 @@ describe('Function helpers/validPassword()', () => {
          return await validPassword('errorPass', {}).should.be.rejectedWith(Error, {
             message: 'Illegal arguments: string, undefined',
          });
+      });
+   });
+   describe('The password validation was walked good', () => {
+      let answerFunc;
+      beforeEach(async () => {
+         try {
+            hashPass = await hashPassword(data.password);
+            answerFunc = await validPassword(data.password, {
+               password: hashPass,
+            });
+         } catch (error) {
+            errorPass = error;
+         }
+      });
+
+      afterEach(() => {
+         sinon.restore();
+      });
+
+      it('The password validation return true', async () => {
+         answerFunc.should.be.true;
+      });
+
+      it('getHashPassword return the valid answer', async () => {
+         hashPass = await sinon.stub(hash, 'getHashPassword').callsFake(() => data.password);
+         should(await hash.getHashPassword(data.password, hashPass)).be.ok();
+         should(await hash.getHashPassword(data.password, hashPass)).be.equal(data.password);
       });
    });
 });

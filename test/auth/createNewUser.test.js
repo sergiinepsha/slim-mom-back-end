@@ -1,39 +1,14 @@
 //mocha test/auth/createNewUser.test.js
 
 const sinon = require('sinon');
+
 const should = require('should');
-const mongoose = require('mongoose');
+
+const userModel = require('../../api/models/user.model');
 
 const { createNewUser } = require('../../api/helpers');
+
 const { hash } = require('../../api/helpers');
-const connectionOnDB = require('../../api/connectionOnDB');
-const userModel = require('../../api/models/user.model');
-const { expectation } = require('sinon');
-const { hashPassword } = require('../../api/helpers/hash');
-
-// module.exports = async data => {
-//    try {
-//       const { email, password } = data;
-
-//       const validUser = await userModel.findUserByEmail(email);
-
-//       const hashPass = await hashPassword(password);
-
-//       const newUser = await userModel.create({
-//          ...data,
-//          password: hashPass,
-//       });
-
-//       const returnUser = {
-//          name: newUser._doc.name,
-//          email: newUser._doc.email,
-//       };
-
-//       return returnUser;
-//    } catch (error) {
-//       throw error;
-//    }
-// };
 
 describe('Function  helpers/createNewUser()', () => {
    let data = { email: 'test@test.com', password: 'password', name: 'test' };
@@ -41,14 +16,8 @@ describe('Function  helpers/createNewUser()', () => {
    let sandbox;
    let findUserByEmailStub;
    let createStub;
-   let hashPasswordStub;
    let errorNewUser;
-   let actualResult;
-
-   beforeEach(async () => {});
-
-   afterEach(() => {});
-
+   let gotAnswer;
    describe('User was found at database', () => {
       beforeEach(async () => {
          sandbox = sinon.createSandbox();
@@ -83,22 +52,22 @@ describe('Function  helpers/createNewUser()', () => {
    });
 
    describe('User was not found at database', () => {
+      let newSpy;
+
       beforeEach(async () => {
          sandbox = sinon.createSandbox();
+         newSpy = sinon.spy();
 
          findUserByEmailStub = sandbox.stub(userModel, 'findUserByEmail');
          createStub = sandbox.stub(userModel, 'create');
 
          findUserByEmailStub.resolves(false);
-
-         createStub.resolves([
-            {
-               _doc: {
-                  name: data.name,
-                  email: data.email,
-               },
+         createStub.resolves({
+            _doc: {
+               name: data.name,
+               email: data.email,
             },
-         ]);
+         });
 
          try {
             await createNewUser(data);
@@ -109,6 +78,7 @@ describe('Function  helpers/createNewUser()', () => {
 
       afterEach(() => {
          sandbox.restore();
+         sinon.restore();
       });
 
       it('The findUserByEmail function  was called once ', () => {
@@ -119,11 +89,27 @@ describe('Function  helpers/createNewUser()', () => {
          sinon.assert.calledWithExactly(findUserByEmailStub, data.email);
       });
 
+      it('hashPassword return the valid answer', async () => {
+         hashPass = await sinon.stub(hash, 'hashPassword').callsFake(() => data.password);
+
+         should(hash.hashPassword(data.password)).be.ok();
+         should(hash.hashPassword(data.password)).be.equal(data.password);
+      });
+
       it('The creat function was called once ', () => {
          sinon.assert.calledOnce(createStub);
       });
-      it('The creat function accepted password', () => {
-         sinon.assert.calledWithExactly(createStub, { ...data, password: data.password });
+      it('The creat function accepted ok hashPass', async () => {
+         sinon.assert.neverCalledWith(createStub, {
+            ...data,
+            password: Error,
+         });
+      });
+      it('Answer createNewUser ok', async () => {
+         await createNewUser(data).should.be.fulfilledWith({
+            name: data.name,
+            email: data.email,
+         });
       });
    });
 });
