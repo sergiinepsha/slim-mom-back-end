@@ -4,10 +4,9 @@
    "description": "",
    "main": "api/start.js",
    "scripts": {
-      "test": "nyc --all --reporter=html mocha test/test.js && npm run auth-test",
+      "test": "nyc --all --reporter=html mocha test/test.js",
       "start": "node api/start.js",
-      "dev": "nodemon api/start.js --ignore db/",
-      "auth-test": "nyc --all --reporter=html mocha \"test/**/*.test.js\""
+      "dev": "nodemon api/start.js --ignore db/"
    },
    "author": "GoIT Team",
    "license": "ISC",
