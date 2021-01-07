@@ -19,7 +19,7 @@ module.exports = class DayController {
       try {
          const daySummary = await DayService.deleteProductPerDay(dayId, eatenProductId);
 
-         return res.status(200).json(daySummary);
+         return res.status(201).json(daySummary);
       } catch (error) {
          next(error);
       }
