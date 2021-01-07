@@ -2,7 +2,13 @@
 
 const path = require('path');
 
-require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+try {
+   require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+} catch (error) {
+   const err = new Error('Dotenv error');
+   err.code = 500;
+   throw err;
+}
 
 module.exports = {
    corsUrl: 'http://localhost:3000', //TODO: вставить адрес фронта с netlify
