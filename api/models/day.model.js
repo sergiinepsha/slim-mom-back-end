@@ -3,8 +3,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const dayModelStatic = require('./day.model.static');
-
 const daySchema = new Schema({
    eatenProducts: [
       {
@@ -23,11 +21,46 @@ const daySchema = new Schema({
    notAllowedProducts: { type: Array },
 });
 
-daySchema.statics.findDayByIdAndUpdateEatenProducts =
-   dayModelStatic.findDayByIdAndUpdateEatenProducts;
-daySchema.statics.findDayByIdAndUpdateDaySummary = dayModelStatic.findDayByIdAndUpdateDaySummary;
-daySchema.statics.findDayByIdAndUpdateEatenProductsAndDaySummary =
-   dayModelStatic.findDayByIdAndUpdateEatenProductsAndDaySummary;
+daySchema.statics.findDayByIdAndUpdateEatenProducts = findDayByIdAndUpdateEatenProducts;
+daySchema.statics.findDayByIdAndUpdateDaySummary = findDayByIdAndUpdateDaySummary;
+daySchema.statics.findDayByIdAndUpdateEatenProductsAndDaySummary = findDayByIdAndUpdateEatenProductsAndDaySummary;
+
+async function findDayByIdAndUpdateEatenProducts(dayId, productCalculated) {
+   try {
+      return await this.findByIdAndUpdate(
+         dayId,
+         {
+            $push: { eatenProducts: productCalculated },
+         },
+         { new: true },
+      );
+   } catch (error) {
+      throw error;
+   }
+}
+
+async function findDayByIdAndUpdateDaySummary(dayId, daySummary) {
+   try {
+      return await this.findByIdAndUpdate(dayId, { daySummary }, { new: true });
+   } catch (error) {
+      throw error;
+   }
+}
+
+async function findDayByIdAndUpdateEatenProductsAndDaySummary(
+   dayId,
+   updatedEatenProducts,
+   updatedDaySummary,
+) {
+   try {
+      return await this.findByIdAndUpdate(dayId, {
+         eatenProducts: updatedEatenProducts,
+         daySummary: updatedDaySummary,
+      });
+   } catch (error) {
+      throw error;
+   }
+}
 
 // MongoDB collection >>> products
 const dayModel = mongoose.model('Day', daySchema);
