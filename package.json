@@ -7,7 +7,7 @@
       "test": "nyc --all --reporter=html mocha test/test.js && npm run auth-test",
       "start": "node api/start.js",
       "dev": "nodemon api/start.js --ignore db/",
-      "auth-test": "nyc --all --reporter=html mocha \"test/**/*.test.js\""
+      "auth-test": " mocha \"test/**/*.test.js\""
    },
    "author": "GoIT Team",
    "license": "ISC",

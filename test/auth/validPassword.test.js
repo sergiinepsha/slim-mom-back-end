@@ -1,6 +1,5 @@
 const sinon = require('sinon');
 const should = require('should');
-const mongoose = require('mongoose');
 
 const { validPassword } = require('../../api/helpers');
 const hash = require('../../api/helpers/hash');
@@ -60,14 +59,14 @@ describe('Function helpers/validPassword()', () => {
          sinon.restore();
       });
 
-      it('The password validation return true', async () => {
+      it('The password validation return true', () => {
          answerFunc.should.be.true;
       });
 
-      it('getHashPassword return the valid answer', async () => {
-         hashPass = await sinon.stub(hash, 'getHashPassword').callsFake(() => data.password);
-         should(await hash.getHashPassword(data.password, hashPass)).be.ok();
-         should(await hash.getHashPassword(data.password, hashPass)).be.equal(data.password);
+      it('getHashPassword return the valid answer', () => {
+         hashPass = sinon.stub(hash, 'getHashPassword').callsFake(() => data.password);
+         should(hash.getHashPassword(data.password, hashPass)).be.ok();
+         should(hash.getHashPassword(data.password, hashPass)).be.equal(data.password);
       });
    });
 });

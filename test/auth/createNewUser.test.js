@@ -89,8 +89,8 @@ describe('Function  helpers/createNewUser()', () => {
          sinon.assert.calledWithExactly(findUserByEmailStub, data.email);
       });
 
-      it('hashPassword return the valid answer', async () => {
-         hashPass = await sinon.stub(hash, 'hashPassword').callsFake(() => data.password);
+      it('hashPassword return the valid answer', () => {
+         hashPass = sinon.stub(hash, 'hashPassword').callsFake(() => data.password);
 
          should(hash.hashPassword(data.password)).be.ok();
          should(hash.hashPassword(data.password)).be.equal(data.password);
