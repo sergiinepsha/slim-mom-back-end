@@ -29,7 +29,7 @@ module.exports = class AuthController {
          const { email, password } = req.body;
 
          const userFromDb = await getEmail(email);
-         console.dir(userFromDb);
+
          await validPassword(password, userFromDb);
 
          const user = await addForUserTokens(userFromDb._id);
