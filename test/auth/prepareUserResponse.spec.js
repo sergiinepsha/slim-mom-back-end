@@ -3,7 +3,7 @@ const should = require('should');
 
 const { prepareUserResponse } = require('../../api/helpers');
 
-describe('The test  prepareUserResponse() func', () => {
+describe('Function helpers/prepareUserResponse()', () => {
    const user = {
       accessToken: 'accessToken',
       refreshToken: 'refreshToken',
