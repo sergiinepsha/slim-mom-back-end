@@ -16,6 +16,6 @@ module.exports = {
    corsUrl: CORS_URL,
    jwtSecret: JWT_SECRET,
    mongodbUrl: MONGODB_URL,
-   port: PORT,
+   port: PORT || 3100,
    salt: SALT,
 };
