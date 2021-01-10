@@ -10,10 +10,12 @@ try {
    throw err;
 }
 
+const { JWT_SECRET, MONGODB_URL, PORT, SALT, CORS_URL } = process.env;
+
 module.exports = {
-   corsUrl: 'http://localhost:3000', //TODO: вставить адрес фронта с netlify
-   jwtSecret: process.env.JWT_SECRET,
-   mongodbUrl: process.env.MONGODB_URL,
-   port: process.env.PORT,
-   salt: process.env.SALT,
+   corsUrl: CORS_URL,
+   jwtSecret: JWT_SECRET,
+   mongodbUrl: MONGODB_URL,
+   port: PORT || 3100,
+   salt: SALT,
 };
