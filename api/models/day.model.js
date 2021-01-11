@@ -22,6 +22,7 @@ const daySchema = new Schema({
 });
 
 daySchema.statics.findDayByIdAndUpdateEatenProducts = findDayByIdAndUpdateEatenProducts;
+daySchema.statics.findDayByIdAndUpdateNotAllowedProducts = findDayByIdAndUpdateNotAllowedProducts;
 daySchema.statics.findDayByIdAndUpdateDaySummary = findDayByIdAndUpdateDaySummary;
 daySchema.statics.findDayByIdAndUpdateEatenProductsAndDaySummary = findDayByIdAndUpdateEatenProductsAndDaySummary;
 
@@ -31,6 +32,20 @@ async function findDayByIdAndUpdateEatenProducts(dayId, productCalculated) {
          dayId,
          {
             $push: { eatenProducts: productCalculated },
+         },
+         { new: true },
+      );
+   } catch (error) {
+      throw error;
+   }
+}
+
+async function findDayByIdAndUpdateNotAllowedProducts(dayId, notAllowedProduct) {
+   try {
+      return await this.findByIdAndUpdate(
+         dayId,
+         {
+            $push: { notAllowedProducts: notAllowedProduct },
          },
          { new: true },
       );
