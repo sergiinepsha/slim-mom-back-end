@@ -24,7 +24,7 @@ module.exports = class AuthService {
             err.code = 401;
             throw err;
          }
-         console.log('auth >>>');
+
          return user;
       } catch (error) {
          const err = new Error('User not authorized');

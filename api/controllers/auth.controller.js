@@ -54,6 +54,16 @@ module.exports = class AuthController {
       }
    }
 
+   static async refresh(req, res, next) {
+      try {
+         const newToken = updateUserToken(req.body.sid, req.body.refreshToken);
+
+         return res.status(204).json(newToken);
+      } catch (error) {
+         next(error);
+      }
+   }
+
    static async authorize(req, res, next) {
       try {
          const authorizationHeader = req.get('Authorization' || '');
