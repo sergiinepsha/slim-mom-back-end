@@ -60,8 +60,9 @@ module.exports = {
    },
 
    validToken: token => {
+      console.dir('value 1');
       const verifyToken = jwt.verify(token, config.jwtSecret);
-
+      console.dir('value 2');
       if (!verifyToken) {
          const err = new Error('User not authorized');
          err.code = 401;
