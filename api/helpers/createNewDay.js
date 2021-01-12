@@ -5,10 +5,16 @@ const userModel = require('../models/user.model');
 
 const calculateEatenProduct = require('./calculateEatenProduct');
 const calculateDaySummary = require('./calculateDaySummary');
+const isNotAllowedProduct = require('./isNotAllowedProduct');
 
-module.exports = async (userId, dailyRate, date, eatenProduct, weight) => {
+module.exports = async (currentUser, date, eatenProduct, weight) => {
+   const { dailyRate, bloodType } = currentUser.userData;
+   const userId = currentUser._id;
+
    try {
       const productCalculated = eatenProduct ? calculateEatenProduct(eatenProduct, weight) : null;
+
+      const notAllowedProduct = eatenProduct ? isNotAllowedProduct(bloodType, eatenProduct) : null;
 
       const kcal = productCalculated ? productCalculated.kcal : 0;
 
@@ -16,6 +22,7 @@ module.exports = async (userId, dailyRate, date, eatenProduct, weight) => {
          eatenProducts: productCalculated ? [productCalculated] : [],
          date,
          daySummary: calculateDaySummary(kcal, dailyRate),
+         notAllowedProducts: notAllowedProduct ? [notAllowedProduct] : [],
       };
 
       const currentDay = await dayModel.create(newDay);

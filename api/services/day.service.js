@@ -11,22 +11,20 @@ const {
 } = require('../helpers');
 
 module.exports = class ProductService {
-   static async addProductPerDay(reqBody, reqUser) {
+   static async addProductPerDay(reqBody, currentUser) {
       const { date, productId, weight } = reqBody;
-      const userId = reqUser._id;
-      const userDays = reqUser.days;
-      const dailyRate = reqUser.userData.dailyRate;
+      const userDays = currentUser.days;
 
       try {
          const eatenProduct = await checkEatenProduct(productId);
 
          const isSuchDay = await userDays.find(day => day.date === date);
 
-         const currentDay = isSuchDay
-            ? updateExistingDay(eatenProduct, weight, isSuchDay.id, dailyRate)
-            : createNewDay(userId, dailyRate, date, eatenProduct, weight);
+         if (isSuchDay) {
+            return updateExistingDay(currentUser, eatenProduct, weight, isSuchDay.id);
+         }
 
-         return currentDay;
+         return createNewDay(currentUser, date, eatenProduct, weight);
       } catch (error) {
          throw error;
       }
@@ -48,7 +46,9 @@ module.exports = class ProductService {
       }
    }
 
-   static async infoPerDay(date, userId, dailyRate) {
+   static async infoPerDay(date, currentUser) {
+      const userId = currentUser._id;
+
       try {
          const user = await userModel.findById(userId);
 
@@ -58,7 +58,7 @@ module.exports = class ProductService {
             return await dayModel.findById(userDay.id);
          }
 
-         return await createNewDay(userId, dailyRate, date);
+         return await createNewDay(currentUser, date);
       } catch (error) {
          throw error;
       }

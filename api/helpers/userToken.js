@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const userModel = require('../models/user.model');
 const config = require('../config');
+const getUserIdFromToken = require('./getUserIdFromToken');
 
 async function createToken(id, options) {
    try {
@@ -19,6 +20,12 @@ module.exports = {
          if (value === null) {
             return await userModel.updateAccessToken(userID, null);
          }
+
+         const idFromToken = await getUserIdFromToken(value);
+
+         console.log('updateUserToken >>>');
+         console.dir(idFromToken);
+         console.dir(userID === idFromToken);
 
          const accessTokenOptions = { expiresIn: 120 * 60 };
 
@@ -38,7 +45,7 @@ module.exports = {
             return await userModel.addTokensForUser(userID, null, null);
          }
 
-         const accessTokenOptions = { expiresIn: 120 * 60 }; //120 * 60
+         const accessTokenOptions = { expiresIn: 60 }; //120 * 60
          const refreshTokenOptions = { expiresIn: 2 * 24 * 60 * 60 };
 
          const accessToken = await createToken(userID, accessTokenOptions);

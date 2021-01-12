@@ -53,16 +53,26 @@ module.exports = class AuthController {
          next(error);
       }
    }
+
    static async refresh(req, res, next) {
       try {
          const user = req.user;
 
-         const newToken = await addForUserTokens(user.sid, user.refreshToken);
+         const { accessToken, refreshToken } = await addForUserTokens(user.id);
 
-         return res.status(201).json({
-            accessToken: newToken.accessToken,
-            refreshToken: newToken.refreshToken,
-         });
+         return res.status(201).json({ accessToken, refreshToken });
+      } catch (error) {
+         next(error);
+      }
+   }
+
+   static async authRefresh(req, res, next) {
+      try {
+         const RefreshHeader = req.get('Refresh-Authorization' || '');
+
+         req.user = await AuthService.refresh(RefreshHeader);
+
+         next();
       } catch (error) {
          next(error);
       }

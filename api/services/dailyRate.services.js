@@ -19,19 +19,13 @@ module.exports = class DailyRateService {
 
          const existingDay = currentUser.days.find(({ date }) => date === currentDate);
 
-         let currentDay;
-
          if (existingDay) {
             const day = await dayModel.findById(existingDay.id);
 
-            currentDay = await updateDaySummary(day, dailyRate);
-
-            return currentDay;
+            return await updateDaySummary(day, dailyRate);
          }
 
-         currentDay = await createNewDay(userId, dailyRate, currentDate);
-
-         return currentDay;
+         return await createNewDay(currentUser, currentDate);
       } catch (error) {
          throw error;
       }
