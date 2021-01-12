@@ -11,7 +11,7 @@ const {
 
 const AuthService = require('../services/auth.services');
 
-const { updateUserToken, addForUserTokens } = userToken;
+const { addForUserTokens } = userToken;
 
 module.exports = class AuthController {
    static async createUser(req, res, next) {
@@ -46,9 +46,23 @@ module.exports = class AuthController {
       try {
          const user = req.user;
 
-         await updateUserToken(user.sid, null);
+         await addForUserTokens(user.sid, null);
 
          return res.status(204).end();
+      } catch (error) {
+         next(error);
+      }
+   }
+   static async refresh(req, res, next) {
+      try {
+         const user = req.user;
+
+         const newToken = await addForUserTokens(user.sid, user.refreshToken);
+
+         return res.status(201).json({
+            accessToken: newToken.accessToken,
+            refreshToken: newToken.refreshToken,
+         });
       } catch (error) {
          next(error);
       }

@@ -13,6 +13,8 @@ authRouter.post('/register', AuthValidators.validateCreateUser, AuthController.c
 
 authRouter.post('/logout', AuthController.authorize, AuthController.logout);
 
+authRouter.post('/refresh', AuthController.authorize, AuthController.refresh);
+
 // authRouter.get('/verify/:verificationToken', AuthController.verifyUserByEmail);
 
 module.exports = authRouter;

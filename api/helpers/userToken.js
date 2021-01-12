@@ -35,10 +35,10 @@ module.exports = {
    addForUserTokens: async (userID, value) => {
       try {
          if (value === null) {
-            return await userModel.addTokensForUser(userID, null);
+            return await userModel.addTokensForUser(userID, null, null);
          }
 
-         const accessTokenOptions = { expiresIn: 120 * 60 };
+         const accessTokenOptions = { expiresIn: 120 * 60 }; //120 * 60
          const refreshTokenOptions = { expiresIn: 2 * 24 * 60 * 60 };
 
          const accessToken = await createToken(userID, accessTokenOptions);
