@@ -26,12 +26,10 @@ module.exports = class DayController {
    }
 
    static async infoPerDay(req, res, next) {
-      const userId = req.user._id;
-      const { dailyRate } = req.user.userData;
       const { date } = req.body;
 
       try {
-         const dayInfo = await DayService.infoPerDay(date, userId, dailyRate);
+         const dayInfo = await DayService.infoPerDay(date, req.user);
 
          return res.status(200).json(dayInfo);
       } catch (error) {
