@@ -45,7 +45,7 @@ module.exports = {
             return await userModel.addTokensForUser(userID, null, null);
          }
 
-         const accessTokenOptions = { expiresIn: 60 }; //120 * 60
+         const accessTokenOptions = { expiresIn: 120 * 60 }; //120 * 60
          const refreshTokenOptions = { expiresIn: 2 * 24 * 60 * 60 };
 
          const accessToken = await createToken(userID, accessTokenOptions);
@@ -60,7 +60,7 @@ module.exports = {
    },
 
    validToken: token => {
-      console.dir('value 1');
+      console.log(('value 1 >>>', token));
       const verifyToken = jwt.verify(token, config.jwtSecret);
       console.dir('value 2');
       if (!verifyToken) {

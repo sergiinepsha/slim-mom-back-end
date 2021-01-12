@@ -15,6 +15,7 @@ module.exports = class AuthService {
          }
          console.log('message auth 2>>>');
          const token = authorizationHeader.replace('Bearer ', '');
+         console.dir(token);
          console.log('message auth 3>>>');
          const userId = await getUserIdFromToken(token);
          console.log('message auth 4>>>');
