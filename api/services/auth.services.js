@@ -40,7 +40,7 @@ module.exports = class AuthService {
          console.log('message refresh 1>>>');
          if (!refreshHeader) {
             const err = new Error('User not authorized');
-            err.code = 401;
+            err.code = 403;
             throw err;
          }
          console.log('message refresh 2>>>');
@@ -52,14 +52,14 @@ module.exports = class AuthService {
          console.log('message refresh 5>>>');
          if (!user || user.refreshToken !== token) {
             const err = new Error('User not authorized');
-            err.code = 401;
+            err.code = 403;
             throw err;
          }
          console.log('message refresh 6>>>');
          return user;
       } catch (error) {
          const err = new Error('User not authorized');
-         err.code = 401;
+         err.code = 403;
          throw err;
       }
    }
