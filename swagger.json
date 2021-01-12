@@ -653,7 +653,7 @@
                   "items": {
                      "type": "string",
                      "description": "Not allowed product",
-                     "example": ["Яйцо куриное (желток сухой)"]
+                     "example": "Яйцо куриное (желток сухой)"
                   }
                },
                "eatenProducts": {
@@ -871,7 +871,7 @@
                   "items": {
                      "type": "string",
                      "description": "Not allowed product",
-                     "example": ["Яйцо куриное (желток сухой)"]
+                     "example": "Яйцо куриное (желток сухой)"
                   }
                },
                "eatenProducts": {
@@ -1016,7 +1016,7 @@
                   "items": {
                      "type": "string",
                      "description": "Not allowed product",
-                     "example": {}
+                     "example": "Яйцо куриное (желток сухой)"
                   }
                },
                "daySummary": {
