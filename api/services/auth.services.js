@@ -32,4 +32,32 @@ module.exports = class AuthService {
          throw err;
       }
    }
+
+   static async refresh(refreshHeader) {
+      try {
+         if (!refreshHeader) {
+            const err = new Error('User not authorized');
+            err.code = 401;
+            throw err;
+         }
+
+         const token = refreshHeader.replace('Bearer ', '');
+
+         const userId = await getUserIdFromToken(token);
+
+         const user = await userModel.findById(userId);
+
+         if (!user) {
+            const err = new Error('User not authorized');
+            err.code = 401;
+            throw err;
+         }
+
+         return user;
+      } catch (error) {
+         const err = new Error('User not authorized');
+         err.code = 401;
+         throw err;
+      }
+   }
 };

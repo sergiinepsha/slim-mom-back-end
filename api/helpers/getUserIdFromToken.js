@@ -2,10 +2,4 @@
 
 const { userToken } = require('./');
 
-module.exports = token => {
-   const verifyToken = userToken.validToken(token);
-
-   const userId = verifyToken.id;
-
-   return userId;
-};
+module.exports = token => userToken.validToken(token).id;
