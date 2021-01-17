@@ -35,7 +35,7 @@ module.exports = class AuthValidator {
          const userTemple = Joi.object({
             email: Joi.string()
                .min(3)
-               .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'pw'] } }) // валидация мыла
+               .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'pw'] } })
                .required(),
             password: Joi.string().min(3),
          });
