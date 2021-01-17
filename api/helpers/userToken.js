@@ -20,7 +20,7 @@ module.exports = {
             return await userModel.updateAccessToken(userID, null);
          }
 
-         const accessTokenOptions = { expiresIn: 120 * 60 };
+         const accessTokenOptions = { expiresIn: 30 * 60 };
 
          const accessToken = await createToken(userID, accessTokenOptions);
 
@@ -38,7 +38,7 @@ module.exports = {
             return await userModel.addTokensForUser(userID, null);
          }
 
-         const accessTokenOptions = { expiresIn: 120 * 60 };
+         const accessTokenOptions = { expiresIn: 30 * 60 };
          const refreshTokenOptions = { expiresIn: 2 * 24 * 60 * 60 };
 
          const accessToken = await createToken(userID, accessTokenOptions);
